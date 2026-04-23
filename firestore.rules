@@ -1,0 +1,239 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: products
+    // Fields: name (string), category (string), size (string), color (string), price (number)
+    //
+    // Collection: clients
+    // Fields: name (string), phone (string), instagram (string), address (string), comment (string)
+    //
+    // Collection: orders
+    // Fields: clientId (string), date (string), status (string), delivery (string), manager (string), comment (string)
+    //
+    // Collection: orderItems
+    // Fields: orderId (string), productId (string), qty (number), defect (number), price (number)
+    //
+    // Collection: purchases
+    // Fields: date (string), supplier (string), status (string)
+    //
+    // Collection: purchaseItems
+    // Fields: purchaseId (string), productId (string), qty (number), price (number)
+    //
+    // Collection: technicalSpecs
+    // Fields: size (string), heliumVolume (number)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (
+          (request.auth.token.email == "vladimir.chuguev@gmail.com" && request.auth.token.email_verified == true) ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+           'role' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+        );
+    }
+
+    function isManager() {
+      return isAuthenticated() && 
+        (
+          isAdmin() || 
+          (request.auth.token.email == "feelup.balloons@gmail.com" && request.auth.token.email_verified == true) ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+           'role' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data &&
+           get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager')
+        );
+    }
+
+    function isViewer() {
+      return isAuthenticated();
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidProduct(data) {
+      return hasRequiredFields(['name']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 500 &&
+             (!('category' in data) || (data.category is string && data.category.size() < 200)) &&
+             (!('size' in data) || (data.size is string && data.size.size() < 100)) &&
+             (!('color' in data) || (data.color is string && data.color.size() < 100)) &&
+             (!('heliumVolume' in data) || (data.heliumVolume is number && data.heliumVolume >= 0)) &&
+             (!('costPrice' in data) || (data.costPrice is number && data.costPrice >= 0)) &&
+             (!('currentStock' in data) || (data.currentStock is number)) &&
+             (!('isArchived' in data) || data.isArchived is bool) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidHelium(data) {
+      return hasRequiredFields(['name', 'currentVolumeM3', 'capacityM3']) &&
+             data.name is string &&
+             data.currentVolumeM3 is number &&
+             data.capacityM3 is number;
+    }
+
+    function isValidClient(data) {
+      return hasRequiredFields(['name']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 500 &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 100)) &&
+             (!('instagram' in data) || (data.instagram is string && data.instagram.size() < 200)) &&
+             (!('address' in data) || (data.address is string && data.address.size() < 1000)) &&
+             (!('comment' in data) || (data.comment is string && data.comment.size() < 5000)) &&
+             (!('isArchived' in data) || data.isArchived is bool) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidOrder(data) {
+      return hasRequiredFields(['clientId', 'date', 'status']) &&
+             data.status in ['В обробці', 'Виконано', 'Скасовано'] &&
+             data.clientId is string &&
+             data.date is string &&
+             (!('delivery' in data) || (data.delivery is string && data.delivery.size() < 1000)) &&
+             (!('manager' in data) || (data.manager is string && data.manager.size() < 200)) &&
+             (!('comment' in data) || (data.comment is string && data.comment.size() < 5000)) &&
+             (!('extraCosts' in data) || (data.extraCosts is number)) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidOrderItem(data) {
+      return hasRequiredFields(['orderId', 'productId', 'qty', 'price']) &&
+             data.qty is number && data.qty > 0 &&
+             data.price is number && data.price > 0 &&
+             data.orderId is string &&
+             data.productId is string &&
+             (!('defect' in data) || (data.defect is number && data.defect >= 0 && data.defect <= data.qty)) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidPurchase(data) {
+      return hasRequiredFields(['date', 'supplier', 'status']) &&
+             data.supplier is string && data.supplier.size() > 0 && data.supplier.size() < 500 &&
+             data.status in ['Оплачено', 'Чернетка'] &&
+             data.date is string &&
+             (!('deliveryCost' in data) || (data.deliveryCost is number)) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidPurchaseItem(data) {
+      return hasRequiredFields(['purchaseId', 'productId', 'qty', 'price']) &&
+             data.qty is number && data.qty > 0 &&
+             data.price is number && data.price > 0 &&
+             data.purchaseId is string &&
+             data.productId is string &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidExpense(data) {
+      return hasRequiredFields(['date', 'category', 'amount']) &&
+             data.date is string &&
+             data.category is string &&
+             data.amount is number &&
+             (!('comment' in data) || (data.comment is string && data.comment.size() < 2000)) &&
+             (!('relatedId' in data) || (data.relatedId is string)) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidLog(data) {
+      return hasRequiredFields(['userId', 'action', 'timestamp', 'details']) &&
+             data.userId == request.auth.uid &&
+             data.action is string && data.action.size() < 200 &&
+             data.timestamp == request.time &&
+             (data.details is string || data.details is map) &&
+             (!('userEmail' in data) || (data.userEmail is string)) &&
+             (!('oldValue' in data) || true) &&
+             (!('newValue' in data) || true);
+    }
+
+    function isValidTechnicalSpec(data) {
+      return hasRequiredFields(['size', 'heliumVolume']) &&
+             data.size is string && data.size.size() > 0 &&
+             data.heliumVolume is number && data.heliumVolume >= 0;
+    }
+
+    // ===============================================================
+    // Match Rules
+    // ===============================================================
+
+    match /helium/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidHelium(request.resource.data);
+    }
+
+    match /logs/{allPaths=**} {
+      allow read: if isManager();
+      allow create: if isAuthenticated() && isValidLog(request.resource.data);
+      allow update, delete: if false; // Immutable logs
+    }
+
+    match /users/{userId} {
+      allow read: if isManager();
+      allow write: if isAdmin();
+    }
+
+    match /products/{productId} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidProduct(request.resource.data);
+    }
+
+    match /clients/{clientId} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidClient(request.resource.data);
+    }
+
+    match /orders/{orderId} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidOrder(request.resource.data);
+    }
+
+    match /orderItems/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidOrderItem(request.resource.data);
+    }
+
+    match /purchases/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidPurchase(request.resource.data);
+    }
+
+    match /purchaseItems/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidPurchaseItem(request.resource.data);
+    }
+
+    match /technicalSpecs/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidTechnicalSpec(request.resource.data);
+    }
+
+    match /expenses/{expenseId} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidExpense(request.resource.data);
+    }
+
+    match /test/{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}
