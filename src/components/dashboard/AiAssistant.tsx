@@ -152,10 +152,20 @@ export const AiAssistant = React.memo(({ chatHistory, isLoading, onSendMessage, 
                 />
               )}
               <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                initial={{ 
+                  opacity: 0, 
+                  y: 100, 
+                  scale: 0.9,
+                  width: isFullscreen ? '100%' : (window.innerWidth < 640 ? 'calc(100% - 32px)' : '400px'),
+                  height: isFullscreen ? '100%' : (window.innerWidth < 640 ? '500px' : '600px'),
+                  bottom: isFullscreen ? 0 : (window.innerWidth < 640 ? '80px' : '90px'),
+                  right: isFullscreen ? 0 : (window.innerWidth < 640 ? '16px' : '24px'),
+                  borderRadius: isFullscreen ? '0' : '1.5rem',
+                  left: isFullscreen || window.innerWidth >= 640 ? 'auto' : '16px',
+                }}
                 animate={{ 
                   opacity: 1, 
-                  y: isFullscreen && window.innerWidth < 1024 ? 0 : 0, 
+                  y: 0, 
                   scale: 1,
                   width: isFullscreen ? '100%' : (window.innerWidth < 640 ? 'calc(100% - 32px)' : '400px'),
                   height: isFullscreen ? '100%' : (window.innerWidth < 640 ? '500px' : '600px'),
@@ -164,7 +174,18 @@ export const AiAssistant = React.memo(({ chatHistory, isLoading, onSendMessage, 
                   borderRadius: isFullscreen ? '0' : '1.5rem',
                   left: isFullscreen || window.innerWidth >= 640 ? 'auto' : '16px',
                 }}
-                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                exit={{ 
+                  opacity: 0, 
+                  y: 100, 
+                  scale: 0.9,
+                  transition: { duration: 0.2 }
+                }}
+                transition={{ 
+                  type: "spring", 
+                  damping: 25, 
+                  stiffness: 200,
+                  opacity: { duration: 0.2 }
+                }}
                 className="fixed z-[70] shadow-2xl flex flex-col overflow-hidden bg-card"
                 style={{ 
                   maxHeight: isFullscreen ? '100vh' : 'calc(100vh - 120px)',
