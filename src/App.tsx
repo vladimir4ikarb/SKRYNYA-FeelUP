@@ -1320,17 +1320,8 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                   </div>
 
                   {/* Balanced AI Assistant & Chart on Desktop */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch">
-                    <div className="flex flex-col h-[380px] lg:h-[450px]">
-                      <AiAssistant 
-                        chatHistory={chatHistory} 
-                        isLoading={isAiLoading} 
-                        onSendMessage={handleAiChat} 
-                      />
-                    </div>
-                    <div className="flex flex-col h-[380px] lg:h-[450px]">
-                      <ProfitChart data={chartData} />
-                    </div>
+                  <div className="h-[380px] lg:h-[450px]">
+                    <ProfitChart data={chartData} />
                   </div>
                 </div>
 
