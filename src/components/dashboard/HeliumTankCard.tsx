@@ -31,7 +31,7 @@ export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate
       <div className="flex-1 flex flex-col items-end justify-center">
         <div className="relative w-full h-8 flex items-center">
           <div className="relative w-full h-7 flex items-center">
-            <div className="relative flex-1 h-full bg-slate-100/60 rounded-full border border-slate-200 overflow-hidden shadow-inner z-10">
+            <div className="relative flex-1 h-full bg-card/60 rounded-full border border-slate-200 overflow-hidden shadow-inner z-10">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(100, (balance / capacity) * 100)}%` }}

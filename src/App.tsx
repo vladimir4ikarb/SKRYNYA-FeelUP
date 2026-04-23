@@ -1205,7 +1205,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
           На жаль, ваша електронна адреса <span className="font-bold text-text-main">{user.email}</span> не має прав доступу до системи FEEL UP.
         </p>
         <div className="flex flex-col gap-3">
-          <button onClick={() => signOut(auth)} className="w-full btn-primary bg-slate-800 hover:bg-slate-900 py-4 font-bold">
+          <button onClick={() => signOut(auth)} className="w-full btn-primary bg-sidebar hover:bg-sidebar py-4 font-bold">
             Вийти з акаунта
           </button>
           <p className="text-xs text-text-muted">Зверніться до адміністратора для отримання доступу</p>
@@ -1271,7 +1271,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     <>
                       <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)}></div>
                       <div className="absolute right-0 mt-3 w-[calc(100vw-32px)] sm:w-80 bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                        <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-between">
+                        <div className="p-4 border-b border-border bg-card/50 flex items-center justify-between">
                           <h3 className="font-bold text-sm text-text-main">Сповіщення</h3>
                           <span className="px-2 py-0.5 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black">{stockAlerts.length}</span>
                         </div>
@@ -1307,7 +1307,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                             </div>
                           )}
                         </div>
-                        <div className="p-3 bg-slate-50/50 border-t border-border">
+                        <div className="p-3 bg-card/50 border-t border-border">
                           <button 
                             onClick={() => { setActiveTab('products'); setIsNotificationsOpen(false); }}
                             className="w-full py-2 text-[10px] font-bold text-primary hover:underline"
@@ -1363,7 +1363,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                   <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)}></div>
                     <div className="absolute right-0 mt-3 w-80 bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                      <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-between">
+                      <div className="p-4 border-b border-border bg-card/50 flex items-center justify-between">
                         <h3 className="font-bold text-sm text-text-main">Сповіщення</h3>
                         <span className="px-2 py-0.5 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black">{stockAlerts.length}</span>
                       </div>
@@ -1399,7 +1399,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                           </div>
                         )}
                       </div>
-                      <div className="p-3 bg-slate-50/50 border-t border-border">
+                      <div className="p-3 bg-card/50 border-t border-border">
                         <button 
                           onClick={() => { setActiveTab('products'); setIsNotificationsOpen(false); }}
                           className="w-full py-2 text-[10px] font-bold text-primary hover:underline"
@@ -1499,7 +1499,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                       <Upload className="w-3 h-3" /> Імпорт
                       <input type="file" accept=".json" onChange={importData} className="hidden" />
                     </label>
-                    <button onClick={exportData} className="btn-primary bg-slate-800 hover:bg-slate-900 flex items-center justify-center gap-2 py-2 px-3 text-[10px] font-bold shadow-none whitespace-nowrap">
+                    <button onClick={exportData} className="btn-primary bg-sidebar hover:bg-sidebar flex items-center justify-center gap-2 py-2 px-3 text-[10px] font-bold shadow-none whitespace-nowrap">
                       <Download className="w-3 h-3" /> .JSON
                     </button>
                     <button onClick={() => exportToCSV('orders')} className="btn-primary bg-indigo-600 hover:bg-indigo-700 flex items-center justify-center gap-2 py-2 px-3 text-[10px] font-bold shadow-none whitespace-nowrap">

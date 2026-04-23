@@ -89,8 +89,8 @@ export const SalesTab = React.memo(({
                   </td>
                   <td className="px-8 py-5 text-right" onClick={(e) => e.stopPropagation()}>
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => onCopy(o.id)} className="p-3 hover:bg-slate-500/10 rounded-xl transition-colors text-text-muted hover:text-indigo-500" title="Копіювати"><Plus className="w-5 h-5" /></button>
-                      <button onClick={() => onEdit(o)} className="p-3 hover:bg-slate-500/10 rounded-xl transition-colors text-text-muted hover:text-primary"><Edit2 className="w-5 h-5" /></button>
+                      <button onClick={() => onCopy(o.id)} className="p-3 hover:bg-card0/10 rounded-xl transition-colors text-text-muted hover:text-indigo-500" title="Копіювати"><Plus className="w-5 h-5" /></button>
+                      <button onClick={() => onEdit(o)} className="p-3 hover:bg-card0/10 rounded-xl transition-colors text-text-muted hover:text-primary"><Edit2 className="w-5 h-5" /></button>
                       <button onClick={() => onDelete(o.id)} className="p-3 hover:bg-rose-500/10 rounded-xl transition-colors text-text-muted hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
                     </div>
                   </td>
@@ -124,7 +124,7 @@ export const SalesTab = React.memo(({
                 </div>
               </div>
               <div className="flex items-center justify-end gap-2 border-t border-border pt-3 mt-1" onClick={(e) => e.stopPropagation()}>
-                <button onClick={() => onCopy(o.id)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-slate-500/5 rounded-xl text-text-muted font-bold text-xs">
+                <button onClick={() => onCopy(o.id)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-card0/5 rounded-xl text-text-muted font-bold text-xs">
                   <Plus className="w-4 h-4" /> Копія
                 </button>
                 <button onClick={() => onEdit(o)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-primary/5 rounded-xl text-primary font-bold text-xs">

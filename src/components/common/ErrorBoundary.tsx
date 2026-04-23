@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+        <div className="min-h-screen flex items-center justify-center bg-card p-6">
           <div className="max-w-2xl w-full bg-white p-8 lg:p-12 rounded-[40px] shadow-2xl border border-red-100 flex flex-col items-center text-center">
             <div className="w-20 h-20 bg-rose-100 rounded-3xl flex items-center justify-center mb-6">
               <AlertCircle className="w-10 h-10 text-rose-600" />
@@ -59,14 +59,14 @@ export class ErrorBoundary extends Component<Props, State> {
               Додаток зіткнувся з непередбачуваною помилкою. Спробуйте оновити сторінку або зверніться до розробника.
             </p>
 
-            <div className="w-full bg-slate-900 text-slate-100 p-6 rounded-3xl text-left text-[10px] overflow-auto max-h-48 mb-8 font-mono shadow-inner border border-white/10">
+            <div className="w-full bg-sidebar text-slate-100 p-6 rounded-3xl text-left text-[10px] overflow-auto max-h-48 mb-8 font-mono shadow-inner border border-white/10">
               <p className="text-rose-400 font-bold mb-2">Error: {this.state.error?.message}</p>
               <p className="opacity-50 break-words whitespace-pre-wrap">{this.state.errorInfo}</p>
             </div>
 
             <button 
               onClick={() => window.location.reload()} 
-              className="w-full btn-primary bg-slate-900 hover:bg-slate-800 shadow-none py-5 rounded-2xl flex items-center justify-center gap-3 text-lg"
+              className="w-full btn-primary bg-sidebar hover:bg-sidebar shadow-none py-5 rounded-2xl flex items-center justify-center gap-3 text-lg"
             >
               <RefreshCw className="w-5 h-5" />
               Оновити систему

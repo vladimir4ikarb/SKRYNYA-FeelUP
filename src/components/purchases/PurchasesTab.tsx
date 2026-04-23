@@ -30,7 +30,7 @@ export const PurchasesTab = React.memo(({
   return (
     <div className="saas-card overflow-hidden">
       <table className="w-full text-left">
-        <thead className="bg-slate-50 border-b border-slate-100">
+        <thead className="bg-card border-b border-slate-100">
           <tr>
             <th className="px-8 py-5 text-sm font-bold text-slate-400 uppercase tracking-wider">Дата</th>
             <th className="px-8 py-5 text-sm font-bold text-slate-400 uppercase tracking-wider">Постачальник</th>
@@ -41,7 +41,7 @@ export const PurchasesTab = React.memo(({
         </thead>
         <tbody className="divide-y divide-slate-100">
           {filteredPurchases.map(p => (
-            <tr key={p.id} className={`hover:bg-slate-50/50 transition-colors cursor-pointer ${selectedPurchaseId === p.id ? 'bg-indigo-50/50' : ''}`} onClick={() => onSelectPurchase(selectedPurchaseId === p.id ? null : p.id)}>
+            <tr key={p.id} className={`hover:bg-card/50 transition-colors cursor-pointer ${selectedPurchaseId === p.id ? 'bg-indigo-50/50' : ''}`} onClick={() => onSelectPurchase(selectedPurchaseId === p.id ? null : p.id)}>
               <td className="px-8 py-5 text-slate-500 font-medium">{new Date(p.date).toLocaleDateString()}</td>
               <td className="px-8 py-5 font-bold text-slate-900">{p.supplierName || p.supplier}</td>
               <td className="px-8 py-5 font-bold text-slate-900">{purchaseTotals[p.id] || 0} ₴</td>
@@ -52,7 +52,7 @@ export const PurchasesTab = React.memo(({
               </td>
               <td className="px-8 py-5 text-right" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-end gap-2">
-                  <button onClick={() => onEdit(p)} className="p-3 hover:bg-slate-100 rounded-xl transition-colors text-slate-400 hover:text-primary"><Edit2 className="w-5 h-5" /></button>
+                  <button onClick={() => onEdit(p)} className="p-3 hover:bg-card rounded-xl transition-colors text-slate-400 hover:text-primary"><Edit2 className="w-5 h-5" /></button>
                   <button onClick={() => onDelete(p.id)} className="p-3 hover:bg-red-50 rounded-xl transition-colors text-slate-400 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
                 </div>
               </td>

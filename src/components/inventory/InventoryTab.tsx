@@ -72,16 +72,16 @@ export const InventoryTab = React.memo(({
                     </td>
                     <td className="px-8 py-5 text-text-muted font-medium">{p.category}</td>
                     <td className="px-8 py-5">
-                      <span className={`px-3 py-1 rounded-lg text-sm font-bold ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                      <span className={`px-3 py-1 rounded-lg text-sm font-bold ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card0/10 text-slate-500'}`}>
                         {inventory[p.id] || 0}
                       </span>
                     </td>
                     <td className="px-8 py-5 text-right">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => onToggleArchive(p)} className="p-3 hover:bg-slate-500/10 rounded-xl transition-colors text-text-muted hover:text-amber-500" title={p.isArchived ? 'Розархівувати' : 'В архів'}>
+                        <button onClick={() => onToggleArchive(p)} className="p-3 hover:bg-card0/10 rounded-xl transition-colors text-text-muted hover:text-amber-500" title={p.isArchived ? 'Розархівувати' : 'В архів'}>
                           <Clock className="w-5 h-5" />
                         </button>
-                        <button onClick={() => onEdit(p)} className="p-3 hover:bg-slate-500/10 rounded-xl transition-colors text-text-muted hover:text-primary"><Edit2 className="w-5 h-5" /></button>
+                        <button onClick={() => onEdit(p)} className="p-3 hover:bg-card0/10 rounded-xl transition-colors text-text-muted hover:text-primary"><Edit2 className="w-5 h-5" /></button>
                         <button onClick={() => onDelete(p.id)} className="p-3 hover:bg-rose-500/10 rounded-xl transition-colors text-text-muted hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
                       </div>
                     </td>
@@ -113,13 +113,13 @@ export const InventoryTab = React.memo(({
                   <div className="flex-1 overflow-hidden">
                     <div className="text-base font-bold text-text-main truncate">{p.name}</div>
                     <div className="text-[11px] text-text-muted font-medium mb-2">{p.size} | {p.color} {p.heliumVolume ? `| ${p.heliumVolume} л` : ''}</div>
-                    <span className={`px-3 py-1 rounded-lg text-xs font-black ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-slate-500/10 text-slate-500'}`}>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-black ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card0/10 text-slate-500'}`}>
                       Залишок: {inventory[p.id] || 0}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center justify-end gap-2 border-t border-border pt-3">
-                  <button onClick={() => onToggleArchive(p)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-slate-500/5 rounded-xl text-text-muted font-bold text-xs">
+                  <button onClick={() => onToggleArchive(p)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-card0/5 rounded-xl text-text-muted font-bold text-xs">
                     <Clock className="w-4 h-4 text-amber-500" /> {p.isArchived ? 'Розархів.' : 'В архів'}
                   </button>
                   <button onClick={() => onEdit(p)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-primary/5 rounded-xl text-primary font-bold text-xs">

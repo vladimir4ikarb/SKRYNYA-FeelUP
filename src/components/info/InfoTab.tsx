@@ -36,7 +36,7 @@ const CheckCircle2 = ({ className }: { className?: string }) => (
 export const InfoTab = () => (
   <div className="space-y-12 max-w-6xl pb-20">
     {/* Header Section */}
-    <div className="saas-card p-6 lg:p-10 border-none shadow-none bg-slate-50 rounded-[32px]">
+    <div className="saas-card p-6 lg:p-10 border-none shadow-none bg-card rounded-[32px]">
       <div className="flex items-center gap-5 mb-6">
         <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-border shrink-0">
           <BookOpen className="w-7 h-7" />
@@ -72,7 +72,7 @@ export const InfoTab = () => (
         }
       ].map((item, i) => (
         <div key={i} className="saas-card p-8">
-          <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center mb-6">
+          <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
             <item.icon className="w-6 h-6" />
           </div>
           <h4 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h4>
@@ -85,7 +85,7 @@ export const InfoTab = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Остатки */}
       <div className="saas-card p-8">
-        <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center mb-6">
+        <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
           <Activity className="w-6 h-6" />
         </div>
         <h4 className="text-xl font-bold text-slate-900 mb-6">Розрахунок залишків</h4>
@@ -107,7 +107,7 @@ export const InfoTab = () => (
 
       {/* Гелий */}
       <div className="saas-card p-8">
-        <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center mb-6">
+        <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
           <Wind className="w-6 h-6" />
         </div>
         <h4 className="text-xl font-bold text-slate-900 mb-6">Облік Гелію</h4>
@@ -136,7 +136,7 @@ export const InfoTab = () => (
         { icon: Users, title: 'Аудит лог', desc: 'Система фіксує кожну суттєву дію: хто, коли і яку операцію виконав у системі FEEL UP.' }
       ].map((item, i) => (
         <div key={i} className="saas-card p-8">
-          <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-xl flex items-center justify-center mb-6">
+          <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
             <item.icon className="w-6 h-6" />
           </div>
           <h4 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h4>
@@ -169,12 +169,12 @@ export const InfoTab = () => (
         <ArrowRight className="hidden lg:block w-8 h-8 text-slate-200" />
 
         <div className="flex flex-col items-center text-center max-w-[220px] relative z-10">
-          <div className="w-12 h-12 bg-slate-50 border border-slate-200 rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-slate-300">03</div>
+          <div className="w-12 h-12 bg-card border border-slate-200 rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-slate-300">03</div>
           <p className="font-bold text-slate-400 text-lg mb-2">Архівація</p>
           <p className="text-sm text-slate-300">Замовлення зберігається в історії для аналітики без можливості подальших змін.</p>
         </div>
 
-        <div className="absolute top-6 left-1/4 right-1/4 h-px bg-slate-100 hidden lg:block"></div>
+        <div className="absolute top-6 left-1/4 right-1/4 h-px bg-card hidden lg:block"></div>
       </div>
     </div>
   </div>

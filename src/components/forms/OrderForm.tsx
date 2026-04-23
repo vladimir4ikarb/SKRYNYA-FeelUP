@@ -70,9 +70,9 @@ export const OrderForm = ({
           <h4 className="font-bold text-slate-900 mb-4">Позиції замовлення</h4>
           
           {draftOrderItems.length > 0 && (
-            <div className="mb-6 bg-slate-50 rounded-xl border border-slate-100 overflow-hidden">
+            <div className="mb-6 bg-card rounded-xl border border-slate-100 overflow-hidden">
               <table className="w-full text-left">
-                <thead className="bg-slate-100/50">
+                <thead className="bg-card/50">
                   <tr>
                     <th className="px-4 py-2 text-xs font-bold text-slate-500">Товар</th>
                     <th className="px-4 py-2 text-xs font-bold text-slate-500">Кількість</th>
@@ -105,7 +105,7 @@ export const OrderForm = ({
             </div>
           )}
 
-          <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+          <div className="bg-card p-4 rounded-xl border border-slate-200">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Товар</label>

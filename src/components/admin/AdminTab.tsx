@@ -33,7 +33,7 @@ export const AdminTab = ({
     <div className="space-y-8">
       <div className="saas-card overflow-x-auto">
         <table className="w-full text-left min-w-[600px]">
-          <thead className="bg-slate-50 border-b border-slate-100">
+          <thead className="bg-card border-b border-slate-100">
             <tr>
               <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider">Ім'я</th>
               <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider">Email</th>
@@ -43,7 +43,7 @@ export const AdminTab = ({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {users.map(u => (
-              <tr key={u.id} className="hover:bg-slate-50/50 transition-colors">
+              <tr key={u.id} className="hover:bg-card/50 transition-colors">
                 <td className="px-4 lg:px-8 py-3 lg:py-5 font-bold text-slate-900 text-xs lg:text-sm">{u.displayName}</td>
                 <td className="px-4 lg:px-8 py-3 lg:py-5 text-slate-500 font-medium text-xs lg:text-sm">{u.email}</td>
                 <td className="px-4 lg:px-8 py-3 lg:py-5">
@@ -53,7 +53,7 @@ export const AdminTab = ({
                 </td>
                 <td className="px-4 lg:px-8 py-3 lg:py-5 text-right">
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => onEditUser(u)} className="p-2 lg:p-3 hover:bg-slate-100 rounded-xl transition-colors text-slate-400 hover:text-primary"><Edit2 className="w-4 h-4 lg:w-5 lg:h-5" /></button>
+                    <button onClick={() => onEditUser(u)} className="p-2 lg:p-3 hover:bg-card rounded-xl transition-colors text-slate-400 hover:text-primary"><Edit2 className="w-4 h-4 lg:w-5 lg:h-5" /></button>
                   </div>
                 </td>
               </tr>
@@ -110,7 +110,7 @@ export const AdminTab = ({
           </div>
           <div className="overflow-x-auto border border-slate-100 rounded-xl">
             <table className="w-full text-left min-w-[500px]">
-              <thead className="bg-slate-50 border-b border-slate-100">
+              <thead className="bg-card border-b border-slate-100">
                 <tr>
                   <th className="px-4 lg:px-6 py-3 lg:py-4 text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Файл</th>
                   <th className="px-4 lg:px-6 py-3 lg:py-4 text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Дата</th>
@@ -122,7 +122,7 @@ export const AdminTab = ({
                 {backups.length === 0 ? (
                   <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-400 font-medium italic text-xs">Копій ще не створено</td></tr>
                 ) : backups.map(backup => (
-                  <tr key={backup.name} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={backup.name} className="hover:bg-card/50 transition-colors">
                     <td className="px-4 lg:px-6 py-3 lg:py-4 font-bold text-slate-900 flex items-center gap-2 text-xs lg:text-sm"><Package className="w-3 h-3 text-slate-400" /> {backup.name}</td>
                     <td className="px-4 lg:px-6 py-3 lg:py-4 text-slate-500 text-[10px] lg:text-sm">{new Date(backup.date).toLocaleDateString('uk-UA')}</td>
                     <td className="px-4 lg:px-6 py-3 lg:py-4 text-slate-500 text-[10px] lg:text-sm">{(backup.size / 1024).toFixed(1)} KB</td>
@@ -153,7 +153,7 @@ export const AdminTab = ({
                   <h4 className="font-bold text-slate-900 mb-1 truncate">{item.name || item.supplierName || item.supplier || `Замовлення від ${item.date}`}</h4>
                   <p className="text-xs text-slate-500 truncate">{item.phone || item.category || item.status}</p>
                 </div>
-                <button onClick={() => onRestoreItem(item.id, item._collection)} className="mt-4 w-full py-2 bg-slate-50 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                <button onClick={() => onRestoreItem(item.id, item._collection)} className="mt-4 w-full py-2 bg-card hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
                   <RefreshCw className="w-3 h-3" /> Відновити
                 </button>
               </div>

@@ -51,7 +51,7 @@ export const PurchaseForm = ({
       </div>
 
       {!editingItem && (
-        <div className="p-6 bg-slate-50 rounded-[24px] border border-slate-200 space-y-6">
+        <div className="p-6 bg-card rounded-[24px] border border-slate-200 space-y-6">
           <h4 className="font-bold text-slate-900 flex items-center gap-2">
             <Plus className="w-4 h-4 text-primary" /> Додати товари до закупівлі
           </h4>

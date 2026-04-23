@@ -67,7 +67,7 @@ export const ClientsTab = React.memo(({ clients, searchTerm, onToggleArchive, on
                 </div>
               </div>
               <div className="flex items-center justify-end gap-2 border-t border-border pt-3 mt-1">
-                <button onClick={() => onToggleArchive(c)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-slate-500/5 rounded-xl text-text-muted font-bold text-xs">
+                <button onClick={() => onToggleArchive(c)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-card0/5 rounded-xl text-text-muted font-bold text-xs">
                   <Clock className="w-4 h-4 text-amber-500" /> {c.isArchived ? 'Розархів.' : 'В архів'}
                 </button>
                 <button onClick={() => onEdit(c)} className="flex-1 flex items-center justify-center gap-2 p-3 bg-primary/5 rounded-xl text-primary font-bold text-xs">
