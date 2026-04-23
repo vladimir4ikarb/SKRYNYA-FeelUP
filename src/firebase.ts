@@ -1,17 +1,20 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, orderBy, limit, getDocFromServer, runTransaction, writeBatch, serverTimestamp } from 'firebase/firestore';
-// Try to load the local config (AI Studio)
-import firebaseConfigLocal from '../firebase-applet-config.json';
-
-// Use a more robust way to extract the config
-const firebaseConfig = (firebaseConfigLocal as any).projectId 
-  ? firebaseConfigLocal 
-  : (firebaseConfigLocal as any).default;
+// Firebase Configuration using environment variables
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  firestoreDatabaseId: import.meta.env.VITE_FIREBASE_DATABASE_ID || "(default)"
+};
 
 // Initialize Firebase SDK
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || "(default)");
+const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
