@@ -17,13 +17,13 @@ export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate
         </div>
 
         <div>
-          <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest leading-none mb-1">
+          <p className="text-[9px] font-semibold text-text-muted uppercase tracking-widest leading-none mb-1">
             Балон 40л
           </p>
 
-          <p className={`text-base lg:text-lg font-semibold leading-none ${balance < 1 ? 'text-rose-500' : 'text-slate-900'}`}>
+          <p className={`text-base lg:text-lg font-semibold leading-none ${balance < 1 ? 'text-rose-500' : 'text-text-main'}`}>
             {balance.toFixed(1)}{' '}
-            <span className="text-[10px] font-normal text-slate-400 tracking-normal">м³</span>
+            <span className="text-[10px] font-normal text-text-muted tracking-normal">м³</span>
           </p>
         </div>
       </div>
@@ -31,7 +31,7 @@ export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate
       <div className="flex-1 flex flex-col items-end justify-center">
         <div className="relative w-full h-8 flex items-center">
           <div className="relative w-full h-7 flex items-center">
-            <div className="relative flex-1 h-full bg-card/60 rounded-full border border-slate-200 overflow-hidden shadow-inner z-10">
+            <div className="relative flex-1 h-full bg-card/60 rounded-full border border-border overflow-hidden shadow-inner z-10">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(100, (balance / capacity) * 100)}%` }}
@@ -41,13 +41,13 @@ export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate
             </div>
 
             <div className="flex flex-col justify-center -ml-[1px] z-0">
-              <div className="w-1.5 h-4 bg-slate-300 border-y border-r border-slate-400 rounded-r-sm"></div>
-              <div className="w-1 h-2 -ml-[6px] absolute right-[-8px] bg-slate-400 rounded-r-sm border border-slate-500 shadow-sm"></div>
+              <div className="w-1.5 h-4 bg-sidebar/10 border-y border-r border-border rounded-r-sm"></div>
+              <div className="w-1 h-2 -ml-[6px] absolute right-[-8px] bg-text-muted/30 rounded-r-sm border border-border shadow-sm"></div>
             </div>
           </div>
         </div>
 
-        <p className="text-[9px] text-slate-400 font-semibold whitespace-nowrap mt-1">
+        <p className="text-[9px] text-text-muted font-semibold whitespace-nowrap mt-1">
           {((balance / capacity) * 100).toFixed(0)}% залишок
         </p>
       </div>

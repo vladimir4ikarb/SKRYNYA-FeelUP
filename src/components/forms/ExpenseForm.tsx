@@ -10,7 +10,7 @@ export const ExpenseForm = ({ editingItem }: ExpenseFormProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Дата</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Дата</label>
         <input 
           name="date" 
           type="date" 
@@ -20,7 +20,7 @@ export const ExpenseForm = ({ editingItem }: ExpenseFormProps) => {
         />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Категорія</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Категорія</label>
         <select name="category" defaultValue={editingItem?.category || 'Інше'} required className="input-field">
           <option value="Реклама">Реклама</option>
           <option value="Логістика">Логістика</option>
@@ -31,7 +31,7 @@ export const ExpenseForm = ({ editingItem }: ExpenseFormProps) => {
         </select>
       </div>
       <div className="md:col-span-2">
-        <label className="text-sm font-bold text-slate-500 block mb-3">Сума, ₴</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Сума, ₴</label>
         <input 
           name="amount" 
           type="number" 
@@ -44,7 +44,7 @@ export const ExpenseForm = ({ editingItem }: ExpenseFormProps) => {
         />
       </div>
       <div className="md:col-span-2">
-        <label className="text-sm font-bold text-slate-500 block mb-3">Коментар</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Коментар</label>
         <textarea 
           name="comment" 
           defaultValue={editingItem?.comment} 

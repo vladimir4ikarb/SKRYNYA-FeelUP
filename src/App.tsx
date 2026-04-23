@@ -1283,7 +1283,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                             </div>
                           ) : (
                             <div className="space-y-1">
-                              <p className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Критичні залишки</p>
+                              <p className="px-2 py-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">Критичні залишки</p>
                               {stockAlerts.map(product => (
                                 <button 
                                   key={product.id}
@@ -1331,7 +1331,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                    activeTab === 'expenses' ? 'Фінансові витрати' :
                    activeTab === 'info' ? 'Про програму' : 'Технічні норми'}
                 </h2>
-                <p className="text-slate-500 text-sm lg:text-base">
+                <p className="text-text-muted text-sm lg:text-base">
                   {activeTab === 'dashboard' ? '' : (activeTab === 'info' ? 'Як працює ваш FEEL UP' : 'Ось що відбувається сьогодні')}
                 </p>
               </div>
@@ -1375,7 +1375,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                           </div>
                         ) : (
                           <div className="space-y-1">
-                            <p className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Критичні залишки</p>
+                            <p className="px-2 py-1 text-[10px] font-bold text-text-muted uppercase tracking-wider">Критичні залишки</p>
                             {stockAlerts.map(product => (
                               <button 
                                 key={product.id}
@@ -1427,7 +1427,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     <div className="flex items-center justify-between">
                       <div>
                         <h2 className="text-base font-black text-text-main leading-tight">FEEL UP Studio</h2>
-                        <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Business System</p>
+                        <p className="text-text-muted text-[9px] font-bold uppercase tracking-wider">Business System</p>
                       </div>
                     </div>
                     
@@ -1651,15 +1651,15 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
           }}>
             <div className="grid grid-cols-2 gap-6">
               <div className="col-span-2">
-                <label className="text-sm font-bold text-slate-500 block mb-2">Назва балона</label>
+                <label className="text-sm font-bold text-text-muted block mb-2">Назва балона</label>
                 <input name="name" defaultValue={heliumTanks[0]?.name || "Основний 40л"} required className="input-field" />
               </div>
               <div>
-                <label className="text-sm font-bold text-slate-500 block mb-2">Об'єм балона (м³)</label>
+                <label className="text-sm font-bold text-text-muted block mb-2">Об'єм балона (м³)</label>
                 <input name="capacityM3" type="number" step="any" defaultValue={heliumTanks[0]?.capacityM3 || 6.0} required className="input-field" />
               </div>
               <div>
-                <label className="text-sm font-bold text-slate-500 block mb-2">Поточний залишок (м³)</label>
+                <label className="text-sm font-bold text-text-muted block mb-2">Поточний залишок (м³)</label>
                 <input name="currentVolumeM3" type="number" step="any" defaultValue={heliumTanks[0]?.currentVolumeM3 || 0} required className="input-field" />
               </div>
             </div>

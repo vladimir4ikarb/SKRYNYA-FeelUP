@@ -27,19 +27,19 @@ export const PurchaseForm = ({
     <div className="space-y-8">
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <label className="text-sm font-bold text-slate-500 block mb-3">Дата</label>
+          <label className="text-sm font-bold text-text-muted block mb-3">Дата</label>
           <input name="date" type="datetime-local" defaultValue={editingItem?.date || new Date().toISOString().slice(0, 16)} required className="input-field" />
         </div>
         <div>
-          <label className="text-sm font-bold text-slate-500 block mb-3">Постачальник</label>
+          <label className="text-sm font-bold text-text-muted block mb-3">Постачальник</label>
           <input name="supplierName" defaultValue={editingItem?.supplierName || editingItem?.supplier} required maxLength={200} className="input-field" />
         </div>
         <div>
-          <label className="text-sm font-bold text-slate-500 block mb-3">Сума доставки нам, ₴</label>
+          <label className="text-sm font-bold text-text-muted block mb-3">Сума доставки нам, ₴</label>
           <input name="deliveryCost" type="number" step="any" defaultValue={editingItem?.deliveryCost || 0} className="input-field" />
         </div>
         <div>
-          <label className="text-sm font-bold text-slate-500 block mb-3">Статус</label>
+          <label className="text-sm font-bold text-text-muted block mb-3">Статус</label>
           <select name="status" defaultValue={editingItem?.status || 'Чернетка'} className="input-field">
             <option value="Чернетка">Чернетка</option>
             <option value="Обробляється">Обробляється</option>
@@ -51,13 +51,13 @@ export const PurchaseForm = ({
       </div>
 
       {!editingItem && (
-        <div className="p-6 bg-card rounded-[24px] border border-slate-200 space-y-6">
-          <h4 className="font-bold text-slate-900 flex items-center gap-2">
+        <div className="p-6 bg-card rounded-[24px] border border-border space-y-6">
+          <h4 className="font-bold text-text-main flex items-center gap-2">
             <Plus className="w-4 h-4 text-primary" /> Додати товари до закупівлі
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="md:col-span-1">
-              <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Товар</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Товар</label>
               <div className="space-y-2">
                 <input 
                   type="text" 
@@ -72,11 +72,11 @@ export const PurchaseForm = ({
               </div>
             </div>
             <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Кількість</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Кількість</label>
               <input ref={draftQtyRef} type="number" step="any" className="input-field" placeholder="0.00" />
             </div>
             <div>
-              <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Ціна</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Ціна</label>
               <input ref={draftPriceRef} type="number" step="any" className="input-field" placeholder="0.00" />
             </div>
           </div>
@@ -92,7 +92,7 @@ export const PurchaseForm = ({
                 if (draftPriceRef.current) draftPriceRef.current.value = '';
               }
             }}
-            className="w-full py-3 bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 bg-card border border-border hover:border-primary hover:text-primary text-text-muted rounded-xl font-bold transition-all flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" /> Додати до списку
           </button>
@@ -101,8 +101,8 @@ export const PurchaseForm = ({
             {draftPurchaseItems.map((item, idx) => {
               const p = products.find(prod => prod.id === item.productId);
               return (
-                <div key={idx} className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
-                  <span className="font-bold text-slate-700">{p?.name}</span>
+                <div key={idx} className="flex items-center justify-between p-3 bg-card rounded-xl border border-border shadow-sm">
+                  <span className="font-bold text-text-main">{p?.name}</span>
                   <div className="flex items-center gap-4">
                     <span className="text-xs font-bold text-indigo-600">{item.qty} x {item.price} ₴</span>
                     <button type="button" onClick={() => setDraftPurchaseItems(draftPurchaseItems.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 p-1">

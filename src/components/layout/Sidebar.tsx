@@ -51,10 +51,10 @@ export const Sidebar = ({
             <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="FEEL UP" />
           </div>
           <div className="flex flex-col justify-center">
-            <h1 className="text-lg lg:text-2xl font-head font-semibold tracking-tight leading-none" style={{ color: '#70489d' }}>
+            <h1 className="text-lg lg:text-2xl font-head font-semibold tracking-tight leading-none text-primary">
               FEEL UP
             </h1>
-            <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-0.5 lg:mt-1 leading-none whitespace-nowrap" style={{ color: '#7c8b98' }}>
+            <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-0.5 lg:mt-1 leading-none whitespace-nowrap text-text-muted">
               СТУДІЯ АЕРОДИЗАЙНУ
             </p>
           </div>
@@ -110,7 +110,7 @@ export const Sidebar = ({
           <img src={user.photoURL || ''} className="w-6 h-6 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl border border-white/10" alt="" />
           <div className="overflow-hidden">
             <p className="text-white font-semibold truncate text-[9px] lg:text-[12px]">{user.displayName}</p>
-            <p className="text-slate-500 text-[7px] lg:text-[10px] truncate">{user.email}</p>
+            <p className="text-text-muted text-[7px] lg:text-[10px] truncate">{user.email}</p>
           </div>
         </div>
 

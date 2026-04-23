@@ -9,15 +9,15 @@ export const ProductForm = ({ editingItem }: ProductFormProps) => {
   return (
     <div className="grid grid-cols-2 gap-8">
       <div className="col-span-2">
-        <label className="text-sm font-bold text-slate-500 block mb-3">Назва товару</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Назва товару</label>
         <input name="name" defaultValue={editingItem?.name} required maxLength={200} className="input-field" />
       </div>
       <div className="col-span-2">
-        <label className="text-sm font-bold text-slate-500 block mb-3">Посилання на фото (URL)</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Посилання на фото (URL)</label>
         <input name="imageUrl" defaultValue={editingItem?.imageUrl} placeholder="https://..." className="input-field" />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Категорія</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Категорія</label>
         <input name="category" defaultValue={editingItem?.category} required maxLength={100} className="input-field" />
       </div>
       <div>

@@ -72,7 +72,7 @@ export const InventoryTab = React.memo(({
                     </td>
                     <td className="px-8 py-5 text-text-muted font-medium">{p.category}</td>
                     <td className="px-8 py-5">
-                      <span className={`px-3 py-1 rounded-lg text-sm font-bold ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card0/10 text-slate-500'}`}>
+                      <span className={`px-3 py-1 rounded-lg text-sm font-bold ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card0/10 text-text-muted'}`}>
                         {inventory[p.id] || 0}
                       </span>
                     </td>
@@ -113,7 +113,7 @@ export const InventoryTab = React.memo(({
                   <div className="flex-1 overflow-hidden">
                     <div className="text-base font-bold text-text-main truncate">{p.name}</div>
                     <div className="text-[11px] text-text-muted font-medium mb-2">{p.size} | {p.color} {p.heliumVolume ? `| ${p.heliumVolume} л` : ''}</div>
-                    <span className={`px-3 py-1 rounded-lg text-xs font-black ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card0/10 text-slate-500'}`}>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-black ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card0/10 text-text-muted'}`}>
                       Залишок: {inventory[p.id] || 0}
                     </span>
                   </div>

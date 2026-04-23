@@ -186,11 +186,7 @@ export const AiAssistant = React.memo(({ chatHistory, isLoading, onSendMessage, 
                   stiffness: 200,
                   opacity: { duration: 0.2 }
                 }}
-                className="fixed z-[70] shadow-2xl flex flex-col overflow-hidden bg-card"
-                style={{ 
-                  maxHeight: isFullscreen ? '100vh' : 'calc(100vh - 120px)',
-                  margin: isFullscreen ? '0' : '0 auto'
-                }}
+                className={`fixed z-[70] shadow-2xl flex flex-col overflow-hidden bg-card ${isFullscreen ? 'inset-0 m-0' : 'max-h-[calc(100vh-120px)] mx-auto'}`}
               >
                 {renderContent()}
               </motion.div>

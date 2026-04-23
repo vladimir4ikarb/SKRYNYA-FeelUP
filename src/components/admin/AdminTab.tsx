@@ -33,19 +33,19 @@ export const AdminTab = ({
     <div className="space-y-8">
       <div className="saas-card overflow-x-auto">
         <table className="w-full text-left min-w-[600px]">
-          <thead className="bg-card border-b border-slate-100">
+          <thead className="bg-card border-b border-border">
             <tr>
-              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider">Ім'я</th>
-              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider">Email</th>
-              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider">Роль</th>
-              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-slate-400 uppercase tracking-wider text-right">Дії</th>
+              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-text-muted uppercase tracking-wider">Ім'я</th>
+              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-text-muted uppercase tracking-wider">Email</th>
+              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-text-muted uppercase tracking-wider">Роль</th>
+              <th className="px-4 lg:px-8 py-3 lg:py-5 text-[10px] lg:text-sm font-bold text-text-muted uppercase tracking-wider text-right">Дії</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-border">
             {users.map(u => (
               <tr key={u.id} className="hover:bg-card/50 transition-colors">
-                <td className="px-4 lg:px-8 py-3 lg:py-5 font-bold text-slate-900 text-xs lg:text-sm">{u.displayName}</td>
-                <td className="px-4 lg:px-8 py-3 lg:py-5 text-slate-500 font-medium text-xs lg:text-sm">{u.email}</td>
+                <td className="px-4 lg:px-8 py-3 lg:py-5 font-bold text-text-main text-xs lg:text-sm">{u.displayName}</td>
+                <td className="px-4 lg:px-8 py-3 lg:py-5 text-text-muted font-medium text-xs lg:text-sm">{u.email}</td>
                 <td className="px-4 lg:px-8 py-3 lg:py-5">
                   <span className={`badge py-0.5 px-2 text-[10px] lg:text-xs ${u.role === 'admin' ? 'badge-success' : u.role === 'manager' ? 'badge-warning' : 'badge-danger'}`}>
                     {u.role}
@@ -53,7 +53,7 @@ export const AdminTab = ({
                 </td>
                 <td className="px-4 lg:px-8 py-3 lg:py-5 text-right">
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => onEditUser(u)} className="p-2 lg:p-3 hover:bg-card rounded-xl transition-colors text-slate-400 hover:text-primary"><Edit2 className="w-4 h-4 lg:w-5 lg:h-5" /></button>
+                    <button onClick={() => onEditUser(u)} className="p-2 lg:p-3 hover:bg-card rounded-xl transition-colors text-text-muted hover:text-primary"><Edit2 className="w-4 h-4 lg:w-5 lg:h-5" /></button>
                   </div>
                 </td>
               </tr>
@@ -63,9 +63,9 @@ export const AdminTab = ({
       </div>
 
       <div className="mt-12 space-y-12">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 border-y border-slate-100">
-          <h3 className="text-lg lg:text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Trash2 className="w-5 h-5 lg:w-6 lg:h-6 text-slate-400" /> Небезпечна зона
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 border-y border-border">
+          <h3 className="text-lg lg:text-xl font-bold text-text-main flex items-center gap-2">
+            <Trash2 className="w-5 h-5 lg:w-6 lg:h-6 text-text-muted" /> Небезпечна зона
           </h3>
           <div className="flex flex-col sm:flex-row gap-3">
             <button 
@@ -88,7 +88,7 @@ export const AdminTab = ({
                 <span className="text-[9px] font-bold text-rose-600 px-2 uppercase">Ви впевнені?</span>
                 <div className="flex gap-2">
                   <button onClick={onClearWarehouse} disabled={isSubmitting} className="px-3 py-1 bg-rose-600 text-white text-[9px] font-bold rounded-lg hover:bg-rose-700 transition-colors disabled:opacity-50">ТАК</button>
-                  <button onClick={() => setShowConfirmWarehouse(false)} disabled={isSubmitting} className="px-3 py-1 bg-slate-200 text-slate-700 text-[9px] font-bold rounded-lg hover:bg-slate-300 transition-colors disabled:opacity-50">НІ</button>
+                  <button onClick={() => setShowConfirmWarehouse(false)} disabled={isSubmitting} className="px-3 py-1 bg-card text-text-muted text-[9px] font-bold rounded-lg hover:bg-card0/20 transition-colors disabled:opacity-50">НІ</button>
                 </div>
               </div>
             )}
@@ -96,7 +96,7 @@ export const AdminTab = ({
         </div>
 
         {/* 
-        <div className="bg-white p-4 lg:p-8 rounded-2xl lg:rounded-3xl border border-slate-100 shadow-sm">
+        <div className="bg-card p-4 lg:p-8 rounded-2xl lg:rounded-3xl border border-border shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 lg:mb-8 gap-4">
             <div>
               <h3 className="text-lg lg:text-xl font-bold text-slate-900 flex items-center gap-3">
@@ -108,9 +108,9 @@ export const AdminTab = ({
               <Download className="w-3 h-3 lg:w-4 lg:h-4" /> Бекап зараз
             </button>
           </div>
-          <div className="overflow-x-auto border border-slate-100 rounded-xl">
+          <div className="overflow-x-auto border border-border rounded-xl">
             <table className="w-full text-left min-w-[500px]">
-              <thead className="bg-card border-b border-slate-100">
+              <thead className="bg-card border-b border-border">
                 <tr>
                   <th className="px-4 lg:px-6 py-3 lg:py-4 text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Файл</th>
                   <th className="px-4 lg:px-6 py-3 lg:py-4 text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Дата</th>
@@ -118,7 +118,7 @@ export const AdminTab = ({
                   <th className="px-4 lg:px-6 py-3 lg:py-4 text-right text-[10px] lg:text-xs font-bold text-slate-500 uppercase tracking-wider">Дія</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border">
                 {backups.length === 0 ? (
                   <tr><td colSpan={4} className="px-4 py-8 text-center text-slate-400 font-medium italic text-xs">Копій ще не створено</td></tr>
                 ) : backups.map(backup => (
@@ -138,22 +138,22 @@ export const AdminTab = ({
         */}
 
         <div>
-          <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-            <Trash2 className="w-6 h-6 text-slate-400" /> Кошик (видалені записи)
+          <h3 className="text-xl font-bold text-text-main mb-6 flex items-center gap-2">
+            <Trash2 className="w-6 h-6 text-text-muted" /> Кошик (видалені записи)
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trashItems.length === 0 && <p className="text-slate-400 italic col-span-full">Кошик порожній</p>}
+            {trashItems.length === 0 && <p className="text-text-muted italic col-span-full">Кошик порожній</p>}
             {trashItems.map(item => (
-              <div key={item.id} className="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+              <div key={item.id} className="bg-card border border-border rounded-2xl p-6 flex flex-col justify-between shadow-sm">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">{item._collection}</span>
-                    <span className="text-[10px] font-bold text-slate-300">ID: {item.id.slice(0, 8)}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">{item._collection}</span>
+                    <span className="text-[10px] font-bold text-text-muted/50">ID: {item.id.slice(0, 8)}</span>
                   </div>
-                  <h4 className="font-bold text-slate-900 mb-1 truncate">{item.name || item.supplierName || item.supplier || `Замовлення від ${item.date}`}</h4>
-                  <p className="text-xs text-slate-500 truncate">{item.phone || item.category || item.status}</p>
+                  <h4 className="font-bold text-text-main mb-1 truncate">{item.name || item.supplierName || item.supplier || `Замовлення від ${item.date}`}</h4>
+                  <p className="text-xs text-text-muted truncate">{item.phone || item.category || item.status}</p>
                 </div>
-                <button onClick={() => onRestoreItem(item.id, item._collection)} className="mt-4 w-full py-2 bg-card hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
+                <button onClick={() => onRestoreItem(item.id, item._collection)} className="mt-4 w-full py-2 bg-card hover:bg-primary/5 text-text-muted hover:text-primary rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2">
                   <RefreshCw className="w-3 h-3" /> Відновити
                 </button>
               </div>

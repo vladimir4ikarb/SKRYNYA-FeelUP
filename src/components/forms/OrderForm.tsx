@@ -29,30 +29,30 @@ export const OrderForm = ({
   return (
     <div className="grid grid-cols-2 gap-8">
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Дата</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Дата</label>
         <input name="date" type="datetime-local" defaultValue={editingItem?.date || new Date().toISOString().slice(0, 16)} required className="input-field" />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Клієнт</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Клієнт</label>
         <select name="clientId" defaultValue={editingItem?.clientId} required className="input-field">
           <option value="">Оберіть клієнта</option>
           {clients.filter(c => !c.isArchived).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
         </select>
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Доставка до клієнта</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Доставка до клієнта</label>
         <input name="deliveryDate" defaultValue={editingItem?.deliveryDate || editingItem?.delivery} maxLength={500} className="input-field" placeholder="Адреса або самовивіз" />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Витрати (таксі/інше), ₴</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Витрати (таксі/інше), ₴</label>
         <input name="extraCosts" type="number" step="any" defaultValue={editingItem?.extraCosts || 0} className="input-field" />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Менеджер</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Менеджер</label>
         <input name="managerId" defaultValue={editingItem?.managerId || editingItem?.manager} maxLength={100} className="input-field" />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Статус</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Статус</label>
         <select name="status" defaultValue={editingItem?.status || 'Чернетка'} className="input-field">
           <option value="Чернетка">Чернетка</option>
           <option value="В обробці">В обробці</option>
@@ -61,28 +61,28 @@ export const OrderForm = ({
         </select>
       </div>
       <div className="col-span-2">
-        <label className="text-sm font-bold text-slate-500 block mb-3">Коментар</label>
+        <label className="text-sm font-bold text-text-muted block mb-3">Коментар</label>
         <textarea name="comment" defaultValue={editingItem?.comment} maxLength={2000} className="input-field h-24" />
       </div>
       
       {!editingItem && (
-        <div className="col-span-2 mt-6 border-t border-slate-100 pt-6">
-          <h4 className="font-bold text-slate-900 mb-4">Позиції замовлення</h4>
+        <div className="col-span-2 mt-6 border-t border-border pt-6">
+          <h4 className="font-bold text-text-main mb-4">Позиції замовлення</h4>
           
           {draftOrderItems.length > 0 && (
-            <div className="mb-6 bg-card rounded-xl border border-slate-100 overflow-hidden">
+            <div className="mb-6 bg-card rounded-xl border border-border overflow-hidden">
               <table className="w-full text-left">
                 <thead className="bg-card/50">
                   <tr>
-                    <th className="px-4 py-2 text-xs font-bold text-slate-500">Товар</th>
-                    <th className="px-4 py-2 text-xs font-bold text-slate-500">Кількість</th>
-                    <th className="px-4 py-2 text-xs font-bold text-slate-500">Брак</th>
-                    <th className="px-4 py-2 text-xs font-bold text-slate-500">Ціна</th>
-                    <th className="px-4 py-2 text-xs font-bold text-slate-500">Сума</th>
+                    <th className="px-4 py-2 text-xs font-bold text-text-muted">Товар</th>
+                    <th className="px-4 py-2 text-xs font-bold text-text-muted">Кількість</th>
+                    <th className="px-4 py-2 text-xs font-bold text-text-muted">Брак</th>
+                    <th className="px-4 py-2 text-xs font-bold text-text-muted">Ціна</th>
+                    <th className="px-4 py-2 text-xs font-bold text-text-muted">Сума</th>
                     <th className="px-4 py-2"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-border">
                   {draftOrderItems.map((item, idx) => {
                     const p = products.find(prod => prod.id === item.productId);
                     return (
@@ -105,10 +105,10 @@ export const OrderForm = ({
             </div>
           )}
 
-          <div className="bg-card p-4 rounded-xl border border-slate-200">
+          <div className="bg-card p-4 rounded-xl border border-border">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
               <div className="md:col-span-5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Товар</label>
+                <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Товар</label>
                 <div className="space-y-2">
                   <input 
                     type="text" 
@@ -123,15 +123,15 @@ export const OrderForm = ({
                 </div>
               </div>
               <div className="md:col-span-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Кількість</label>
+                <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Кількість</label>
                 <input ref={draftQtyRef} type="number" step="any" min="0.01" className="input-field" placeholder="0" />
               </div>
               <div className="md:col-span-2">
-                <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Брак</label>
+                <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Брак</label>
                 <input ref={draftDefectRef} type="number" step="any" min="0" className="input-field" placeholder="0" />
               </div>
               <div className="md:col-span-3">
-                <label className="text-[10px] font-bold text-slate-400 uppercase mb-1 block">Ціна за од.</label>
+                <label className="text-[10px] font-bold text-text-muted uppercase mb-1 block">Ціна за од.</label>
                 <input ref={draftPriceRef} type="number" step="any" min="0" className="input-field" placeholder="0.00" />
               </div>
             </div>
@@ -150,7 +150,7 @@ export const OrderForm = ({
                   if (draftPriceRef.current) draftPriceRef.current.value = '';
                 }
               }}
-              className="w-full mt-4 py-3 bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 rounded-xl font-bold transition-all flex items-center justify-center gap-2"
+              className="w-full mt-4 py-3 bg-card border border-border hover:border-primary hover:text-primary text-text-muted rounded-xl font-bold transition-all flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" /> Додати позицію
             </button>

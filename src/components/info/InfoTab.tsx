@@ -38,15 +38,15 @@ export const InfoTab = () => (
     {/* Header Section */}
     <div className="saas-card p-6 lg:p-10 border-none shadow-none bg-card rounded-[32px]">
       <div className="flex items-center gap-5 mb-6">
-        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-border shrink-0">
+        <div className="w-14 h-14 bg-card rounded-2xl flex items-center justify-center text-primary shadow-sm border border-border shrink-0">
           <BookOpen className="w-7 h-7" />
         </div>
         <div>
-          <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight uppercase">FEEL UP: ТЕХНІЧНИЙ ГІД</h2>
+          <h2 className="text-xl lg:text-2xl font-bold text-text-main tracking-tight uppercase">FEEL UP: ТЕХНІЧНИЙ ГІД</h2>
           <p className="text-primary font-bold text-[10px] tracking-widest uppercase mt-1">Документація та логіка системи</p>
         </div>
       </div>
-      <p className="text-slate-600 text-base max-w-3xl leading-relaxed">
+      <p className="text-text-muted text-base max-w-3xl leading-relaxed">
         Система Feel UP — це професійний інструмент для управління студією аеродизайну. 
         Усі розрахунки автоматизовані для вашої зручності та точності обліку.
       </p>
@@ -72,11 +72,11 @@ export const InfoTab = () => (
         }
       ].map((item, i) => (
         <div key={i} className="saas-card p-8">
-          <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
+          <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
             <item.icon className="w-6 h-6" />
           </div>
-          <h4 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h4>
-          <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+          <h4 className="text-xl font-bold text-text-main mb-4">{item.title}</h4>
+          <p className="text-sm text-text-muted leading-relaxed">{item.desc}</p>
         </div>
       ))}
     </div>
@@ -85,42 +85,42 @@ export const InfoTab = () => (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Остатки */}
       <div className="saas-card p-8">
-        <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
+        <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
           <Activity className="w-6 h-6" />
         </div>
-        <h4 className="text-xl font-bold text-slate-900 mb-6">Розрахунок залишків</h4>
+        <h4 className="text-xl font-bold text-text-main mb-6">Розрахунок залишків</h4>
         <div className="space-y-6">
           <div>
-            <p className="text-base font-bold text-slate-900 mb-1">Вільний залишок (Free Stock)</p>
-            <p className="text-sm text-slate-500">Ваш фактичний склад за вирахуванням "Резерву" — товарів, які вже заброньовані клієнтами у нових замовленнях.</p>
+            <p className="text-base font-bold text-text-main mb-1">Вільний залишок (Free Stock)</p>
+            <p className="text-sm text-text-muted">Ваш фактичний склад за вирахуванням "Резерву" — товарів, які вже заброньовані клієнтами у нових замовленнях.</p>
           </div>
           <div>
-            <p className="text-base font-bold text-slate-900 mb-1">Резервування</p>
-            <p className="text-sm text-slate-500">Товари стають недоступними для нових продажів одразу після додавання у замовлення зі статусом "В обробці".</p>
+            <p className="text-base font-bold text-text-main mb-1">Резервування</p>
+            <p className="text-sm text-text-muted">Товари стають недоступними для нових продажів одразу після додавання у замовлення зі статусом "В обробці".</p>
           </div>
           <div>
-            <p className="text-base font-bold text-slate-900 mb-1">Архівна логіка</p>
-            <p className="text-sm text-slate-500">Архівовані товари приховуються зі списків вибору, щоб не захаращувати інтерфейс, але зберігаються в історії.</p>
+            <p className="text-base font-bold text-text-main mb-1">Архівна логіка</p>
+            <p className="text-sm text-text-muted">Архівовані товари приховуються зі списків вибору, щоб не захаращувати інтерфейс, але зберігаються в історії.</p>
           </div>
         </div>
       </div>
 
       {/* Гелий */}
       <div className="saas-card p-8">
-        <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
+        <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
           <Wind className="w-6 h-6" />
         </div>
-        <h4 className="text-xl font-bold text-slate-900 mb-6">Облік Гелію</h4>
+        <h4 className="text-xl font-bold text-text-main mb-6">Облік Гелію</h4>
         <div className="space-y-6">
           <div>
-            <p className="text-base font-bold text-slate-900 mb-2">Автоматичне списання</p>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-base font-bold text-text-main mb-2">Автоматичне списання</p>
+            <p className="text-sm text-text-muted leading-relaxed">
               При кожному виконанні замовлення система автоматично перераховує літраж кульок у кубічні метри та віднімає їх від балансу балона.
             </p>
           </div>
           <div>
-            <p className="text-base font-bold text-slate-900 mb-2">Технічні карти</p>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-base font-bold text-text-main mb-2">Технічні карти</p>
+            <p className="text-sm text-text-muted leading-relaxed">
               Точність розрахунків забезпечується технічними нормами, де прописано витрату газу на кожен конкретний розмір кулі.
             </p>
           </div>
@@ -136,42 +136,42 @@ export const InfoTab = () => (
         { icon: Users, title: 'Аудит лог', desc: 'Система фіксує кожну суттєву дію: хто, коли і яку операцію виконав у системі FEEL UP.' }
       ].map((item, i) => (
         <div key={i} className="saas-card p-8">
-          <div className="w-12 h-12 bg-card text-slate-600 rounded-xl flex items-center justify-center mb-6">
+          <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
             <item.icon className="w-6 h-6" />
           </div>
-          <h4 className="text-xl font-bold text-slate-900 mb-4">{item.title}</h4>
-          <p className="text-sm text-slate-500 leading-relaxed">{item.desc}</p>
+          <h4 className="text-xl font-bold text-text-main mb-4">{item.title}</h4>
+          <p className="text-sm text-text-muted leading-relaxed">{item.desc}</p>
         </div>
       ))}
     </div>
 
     {/* Section: Життєвий цикл */}
     <div className="saas-card p-10 lg:p-16">
-      <h3 className="text-2xl font-black text-slate-900 mb-12 text-center uppercase tracking-tight">Життєвий цикл замовлення</h3>
+      <h3 className="text-2xl font-black text-text-main mb-12 text-center uppercase tracking-tight">Життєвий цикл замовлення</h3>
       
       <div className="relative flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-6">
         <div className="flex flex-col items-center text-center max-w-[220px] relative z-10">
-          <div className="w-12 h-12 bg-white border border-slate-200 rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-slate-400">01</div>
-          <p className="font-bold text-slate-900 text-lg mb-2">В обробці</p>
-          <p className="text-sm text-slate-500">Товар резервується на складі, але фактичне списання ще не відбулося.</p>
+          <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-text-muted">01</div>
+          <p className="font-bold text-text-main text-lg mb-2">В обробці</p>
+          <p className="text-sm text-text-muted">Товар резервується на складі, але фактичне списання ще не відбулося.</p>
         </div>
 
-        <ArrowRight className="hidden lg:block w-8 h-8 text-slate-200" />
+        <ArrowRight className="hidden lg:block w-8 h-8 text-border" />
 
         <div className="flex flex-col items-center text-center max-w-[220px] relative z-10">
           <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mb-6 shadow-lg shadow-primary/20">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <p className="font-bold text-slate-900 text-lg mb-2">Виконано</p>
-          <p className="text-sm text-slate-500">Товар остаточно списується зі складу, а кошти додаються до вашого доходу.</p>
+          <p className="font-bold text-text-main text-lg mb-2">Виконано</p>
+          <p className="text-sm text-text-muted">Товар остаточно списується зі складу, а кошти додаються до вашого доходу.</p>
         </div>
 
-        <ArrowRight className="hidden lg:block w-8 h-8 text-slate-200" />
+        <ArrowRight className="hidden lg:block w-8 h-8 text-border" />
 
         <div className="flex flex-col items-center text-center max-w-[220px] relative z-10">
-          <div className="w-12 h-12 bg-card border border-slate-200 rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-slate-300">03</div>
-          <p className="font-bold text-slate-400 text-lg mb-2">Архівація</p>
-          <p className="text-sm text-slate-300">Замовлення зберігається в історії для аналітики без можливості подальших змін.</p>
+          <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-text-muted">03</div>
+          <p className="font-bold text-text-muted text-lg mb-2">Архівація</p>
+          <p className="text-sm text-text-muted">Замовлення зберігається в історії для аналітики без можливості подальших змін.</p>
         </div>
 
         <div className="absolute top-6 left-1/4 right-1/4 h-px bg-card hidden lg:block"></div>

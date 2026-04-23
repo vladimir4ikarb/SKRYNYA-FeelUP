@@ -47,7 +47,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="min-h-screen flex items-center justify-center bg-card p-6">
-          <div className="max-w-2xl w-full bg-white p-8 lg:p-12 rounded-[40px] shadow-2xl border border-red-100 flex flex-col items-center text-center">
+          <div className="max-w-2xl w-full bg-card p-8 lg:p-12 rounded-[40px] shadow-2xl border border-red-100 flex flex-col items-center text-center">
             <div className="w-20 h-20 bg-rose-100 rounded-3xl flex items-center justify-center mb-6">
               <AlertCircle className="w-10 h-10 text-rose-600" />
             </div>
@@ -55,7 +55,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <h1 className="text-3xl font-black text-slate-900 mb-2">
               {isFirestoreError ? 'Помилка доступу' : 'Щось пішло не так'}
             </h1>
-            <p className="text-slate-500 mb-8 max-w-md font-medium">
+            <p className="text-text-muted mb-8 max-w-md font-medium">
               Додаток зіткнувся з непередбачуваною помилкою. Спробуйте оновити сторінку або зверніться до розробника.
             </p>
 
