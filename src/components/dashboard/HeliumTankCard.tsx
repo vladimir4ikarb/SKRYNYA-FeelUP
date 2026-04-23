@@ -24,7 +24,7 @@ export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate
       </div>
       
       <div className="flex-1 flex flex-col gap-1 items-end">
-        <div className="relative w-full h-4 flex items-center max-w-[120px]">
+        <div className="relative w-full h-4 flex items-center">
           <div className="relative w-full h-3 flex items-center">
             <div className="relative flex-1 h-full bg-slate-100 rounded-full border border-slate-200 overflow-hidden shadow-inner z-10">
               <motion.div 
