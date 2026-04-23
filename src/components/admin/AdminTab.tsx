@@ -95,6 +95,7 @@ export const AdminTab = ({
           </div>
         </div>
 
+        {/* 
         <div className="bg-white p-4 lg:p-8 rounded-2xl lg:rounded-3xl border border-slate-100 shadow-sm">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 lg:mb-8 gap-4">
             <div>
@@ -134,6 +135,7 @@ export const AdminTab = ({
             </table>
           </div>
         </div>
+        */}
 
         <div>
           <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
