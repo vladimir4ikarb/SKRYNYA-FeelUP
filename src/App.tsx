@@ -175,6 +175,15 @@ export default function App() {
   const [draftOrderItems, setDraftOrderItems] = useState<{ productId: string, qty: number, price: number, defect: number }[]>([]);
   const [productSearch, setProductSearch] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+useEffect(() => {
+  setIsSidebarOpen(false);
+}, [activeTab]);
+
+// авто-закрытие при смене таба (фикс бага)
+useEffect(() => {
+  setIsSidebarOpen(false);
+}, [activeTab]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
   const handleAiChat = useCallback(async (message: string) => {
@@ -1209,8 +1218,11 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     <ErrorBoundary>
       <div className="min-h-screen bg-background text-text-main flex flex-col lg:flex-row text-sm transition-colors duration-300">
         <Sidebar 
-          activeTab={activeTab} 
-          onTabChange={handleTabChange} 
+  activeTab={activeTab} 
+  onTabChange={(tab) => {
+    handleTabChange(tab);
+    setIsSidebarOpen(false);
+  }}
           user={user} 
           currentUserData={currentUserData} 
           isDarkMode={isDarkMode}
@@ -1226,7 +1238,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <button 
-                  onClick={() => setIsSidebarOpen(true)}
+                  onClick={() => setIsSidebarOpen(prev => !prev)}
                   className="lg:hidden p-2 bg-card border border-border rounded-xl text-text-muted hover:text-primary transition-all"
                 >
                   <Menu className="w-5 h-5 lg:w-6 lg:h-6" />

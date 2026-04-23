@@ -44,14 +44,14 @@ export const Sidebar = ({
   };
 
   const sidebarContent = (
-    <div className="w-64 lg:w-64 bg-sidebar h-screen flex flex-col p-3 lg:p-4 shrink-0 shadow-2xl lg:shadow-none border-r border-slate-800 lg:border-none overflow-y-auto">
+    <div className="w-64 lg:w-64 bg-sidebar/95 backdrop-blur-xl h-screen flex flex-col p-3 lg:p-4 shrink-0 shadow-2xl lg:shadow-none border-r border-white/10 lg:border-none overflow-y-auto">
       <div className="flex items-center justify-between mb-4 lg:mb-8 px-2 lg:block">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 lg:w-10 lg:h-10 flex-shrink-0">
             <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="FEEL UP" />
           </div>
           <div className="flex flex-col justify-center">
-            <h1 className="text-lg lg:text-2xl font-head font-black tracking-tighter leading-none" style={{ color: '#70489d' }}>
+            <h1 className="text-lg lg:text-2xl font-head font-semibold tracking-tight leading-none" style={{ color: '#70489d' }}>
               FEEL UP
             </h1>
             <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-0.5 lg:mt-1 leading-none whitespace-nowrap" style={{ color: '#7c8b98' }}>
@@ -88,15 +88,15 @@ export const Sidebar = ({
         ))}
       </nav>
 
-      <div className="mt-auto pt-3 border-t border-slate-800 flex flex-col gap-0.5 lg:gap-1">
-        <div className="flex items-center justify-between px-3 py-1.5 lg:py-2 mb-1 lg:mb-2 bg-slate-800/40 rounded-xl">
+      <div className="mt-auto pt-3 border-t border-white/10 flex flex-col gap-0.5 lg:gap-1">
+        <div className="flex items-center justify-between px-3 py-1.5 lg:py-2 mb-1 lg:mb-2 bg-white/5 backdrop-blur rounded-xl">
           <div className="flex items-center gap-2">
             {isDarkMode ? <Moon className="w-3 h-3 lg:w-4 lg:h-4 text-primary" /> : <Sun className="w-3 h-3 lg:w-4 lg:h-4 text-amber-500" />}
-            <span className="text-[10px] lg:text-xs font-bold text-slate-300">{isDarkMode ? 'Темна' : 'Світла'}</span>
+            <span className="text-[10px] lg:text-xs font-semibold text-slate-300">{isDarkMode ? 'Темна' : 'Світла'}</span>
           </div>
           <button 
             onClick={onToggleTheme}
-            className={`relative inline-flex h-5 lg:h-6 w-9 lg:w-11 items-center rounded-full transition-colors focus:outline-none ${isDarkMode ? 'bg-primary' : 'bg-slate-700'}`}
+            className={`relative inline-flex h-5 lg:h-6 w-9 lg:w-11 items-center rounded-full transition-colors ${isDarkMode ? 'bg-primary' : 'bg-slate-700'}`}
           >
             <span
               className={`${
@@ -107,12 +107,13 @@ export const Sidebar = ({
         </div>
 
         <div className="flex items-center gap-2 p-1.5 lg:p-2 mb-0.5">
-          <img src={user.photoURL || ''} className="w-6 h-6 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl border border-slate-700" alt="" />
+          <img src={user.photoURL || ''} className="w-6 h-6 lg:w-9 lg:h-9 rounded-lg lg:rounded-xl border border-white/10" alt="" />
           <div className="overflow-hidden">
-            <p className="text-white font-bold truncate text-[9px] lg:text-[12px]">{user.displayName}</p>
+            <p className="text-white font-semibold truncate text-[9px] lg:text-[12px]">{user.displayName}</p>
             <p className="text-slate-500 text-[7px] lg:text-[10px] truncate">{user.email}</p>
           </div>
         </div>
+
         <button
           onClick={() => handleTabSelect('info')}
           className={`sidebar-item w-full py-1.5 lg:py-2.5 px-3 mb-0.5 ${activeTab === 'info' ? 'sidebar-item-active' : ''}`}
@@ -120,7 +121,11 @@ export const Sidebar = ({
           <HelpCircle className="w-4 h-4 lg:w-5 lg:h-5" />
           <span className="text-xs lg:text-base text-slate-400">Про проект</span>
         </button>
-        <button onClick={onSignOut} className="sidebar-item w-full text-slate-400 hover:bg-slate-800 hover:text-white py-1.5 lg:py-2 px-3">
+
+        <button 
+          onClick={onSignOut} 
+          className="sidebar-item w-full text-slate-400 hover:text-white py-1.5 lg:py-2 px-3"
+        >
           <LogOut className="w-4 h-4 lg:w-5 lg:h-5" />
           <span className="text-xs lg:text-base text-red-400">Вийти</span>
         </button>
@@ -130,12 +135,10 @@ export const Sidebar = ({
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 sticky top-0 h-screen shrink-0">
         {sidebarContent}
       </aside>
 
-      {/* Mobile Drawer */}
       <div className={`lg:hidden fixed inset-0 z-50 transition-visibility duration-300 ${isOpen ? 'visible' : 'invisible'}`}>
         <div 
           className={`absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
