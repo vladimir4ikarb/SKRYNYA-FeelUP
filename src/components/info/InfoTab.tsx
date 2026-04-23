@@ -36,17 +36,17 @@ const CheckCircle2 = ({ className }: { className?: string }) => (
 export const InfoTab = () => (
   <div className="space-y-12 max-w-6xl pb-20">
     {/* Header Section */}
-    <div className="saas-card p-8 lg:p-12 border-none shadow-none bg-slate-50 rounded-[32px]">
+    <div className="saas-card p-6 lg:p-10 border-none shadow-none bg-slate-50 rounded-[32px]">
       <div className="flex items-center gap-5 mb-6">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-border shrink-0">
-          <BookOpen className="w-8 h-8" />
+        <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-primary shadow-sm border border-border shrink-0">
+          <BookOpen className="w-7 h-7" />
         </div>
         <div>
-          <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight uppercase">FEEL UP: ТЕХНІЧНИЙ ГІД</h2>
-          <p className="text-primary font-bold text-xs tracking-widest uppercase mt-1">Документація та логіка системи</p>
+          <h2 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight uppercase">FEEL UP: ТЕХНІЧНИЙ ГІД</h2>
+          <p className="text-primary font-bold text-[10px] tracking-widest uppercase mt-1">Документація та логіка системи</p>
         </div>
       </div>
-      <p className="text-slate-600 text-lg max-w-3xl leading-relaxed">
+      <p className="text-slate-600 text-base max-w-3xl leading-relaxed">
         Система Feel UP — це професійний інструмент для управління студією аеродизайну. 
         Усі розрахунки автоматизовані для вашої зручності та точності обліку.
       </p>
