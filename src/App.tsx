@@ -1295,7 +1295,8 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
 
           {activeTab === 'dashboard' ? (
             <div className="flex flex-col gap-4 lg:gap-6">
-              {/* Layout for Mobile vs Desktop is handled below with responsive classes */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
+                <div className="lg:col-span-8 flex flex-col gap-4 lg:gap-6">
                   <div className="hidden lg:grid grid-cols-4 gap-4">
                     <StatCard label="Чистий прибуток" value={`${dashboardStats.totalMargin} ₴`} icon={Wallet} color="bg-indigo-500" trend="Маржа" up={true} isLarge />
                     <StatCard label="Дохід" value={`${dashboardStats.totalIncome} ₴`} icon={ArrowUpRight} color="bg-emerald-500" trend="Гроші" up={true} isLarge />
@@ -1303,7 +1304,6 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     <StatCard label="Сер. чек" value={`${dashboardStats.avgCheck} ₴`} icon={TrendingUp} color="bg-amber-500" trend="Замовлення" up={true} isLarge />
                   </div>
 
-                  {/* Balanced AI Assistant & Chart on Desktop */}
                   <div className="h-[380px] lg:h-[450px]">
                     <ProfitChart data={chartData} />
                   </div>
