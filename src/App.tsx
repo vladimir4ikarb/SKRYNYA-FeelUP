@@ -1244,10 +1244,69 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     className="pl-9 pr-3 py-2 bg-card border border-border rounded-xl w-full focus:ring-2 focus:ring-primary/10 outline-none transition-all text-xs text-text-main"
                   />
                 </div>
-                <button className="p-2 bg-card border border-border rounded-xl text-text-muted hover:text-primary transition-all relative shrink-0">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 border border-white rounded-full"></span>
-                </button>
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                    className={`p-2 bg-card border rounded-xl transition-all relative shrink-0 ${isNotificationsOpen ? 'border-primary text-primary ring-2 ring-primary/10' : 'border-border text-text-muted hover:text-primary hover:border-primary'}`}
+                  >
+                    <Bell className="w-5 h-5" />
+                    {stockAlerts.length > 0 && (
+                      <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 border border-white rounded-full"></span>
+                    )}
+                  </button>
+
+                  {isNotificationsOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsNotificationsOpen(false)}></div>
+                      <div className="absolute right-0 mt-3 w-[calc(100vw-32px)] sm:w-80 bg-card border border-border rounded-2xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                        <div className="p-4 border-b border-border bg-slate-50/50 flex items-center justify-between">
+                          <h3 className="font-bold text-sm text-text-main">Сповіщення</h3>
+                          <span className="px-2 py-0.5 bg-red-500/10 text-red-500 rounded-full text-[10px] font-black">{stockAlerts.length}</span>
+                        </div>
+                        <div className="max-h-[400px] overflow-y-auto p-2">
+                          {stockAlerts.length === 0 ? (
+                            <div className="py-8 text-center text-text-muted">
+                              <CheckCircle2 className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                              <p className="text-xs">Немає нових сповіщень</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-1">
+                              <p className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Критичні залишки</p>
+                              {stockAlerts.map(product => (
+                                <button 
+                                  key={product.id}
+                                  onClick={() => {
+                                    setSearchTerm(product.name);
+                                    setActiveTab('products');
+                                    setIsNotificationsOpen(false);
+                                  }}
+                                  className="w-full p-3 hover:bg-background border border-transparent hover:border-border rounded-xl transition-all flex items-center justify-between group text-left"
+                                >
+                                  <div>
+                                    <p className="text-xs font-bold text-text-main group-hover:text-primary transition-colors">{product.name}</p>
+                                    <p className="text-[10px] text-text-muted">{product.size} {product.color}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <p className="text-xs font-black text-rose-500">{freeStock[product.id] || 0}</p>
+                                    <p className="text-[8px] text-text-muted uppercase">шт</p>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-3 bg-slate-50/50 border-t border-border">
+                          <button 
+                            onClick={() => { setActiveTab('products'); setIsNotificationsOpen(false); }}
+                            className="w-full py-2 text-[10px] font-bold text-primary hover:underline"
+                          >
+                            Перейти до складу
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="hidden lg:block">
