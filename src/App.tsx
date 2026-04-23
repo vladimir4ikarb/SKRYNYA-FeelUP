@@ -95,7 +95,6 @@ import { RecentOrders } from './components/dashboard/RecentOrders';
 import { ProfitChart } from './components/dashboard/ProfitChart';
 import { HeliumTankCard } from './components/dashboard/HeliumTankCard';
 import { StockAlerts } from './components/dashboard/StockAlerts';
-import { CalendarCard } from './components/dashboard/CalendarCard';
 import { AiAssistant } from './components/dashboard/AiAssistant';
 import { InventoryTab } from './components/inventory/InventoryTab';
 import { SalesTab } from './components/sales/SalesTab';
@@ -730,36 +729,20 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
   }, [orders, orderTotals]);
 
   const [googleAccessToken, setGoogleAccessToken] = useState<string | null>(sessionStorage.getItem('google_access_token'));
-
-  const syncWithCalendar = async (orderData: any, items: any[]) => {
-    if (!googleAccessToken || !orderData.deliveryDate) return;
-    
-    const client = clients.find(c => c.id === orderData.clientId);
-    const summary = `Замовлення: ${client?.name || 'Клієнт'} (${orderData.deliveryDate})`;
-    const description = items.map(item => {
-      const p = products.find(prod => prod.id === item.productId);
-      return `${p?.name || 'Товар'} x ${item.qty}`;
-    }).join('\n') + (orderData.comment ? `\n\nКоментар: ${orderData.comment}` : '');
-
-    // Assuming delivery time is 10:00 AM if not specified, duration 1h
-    const startDateTime = `${orderData.deliveryDate}T10:00:00`;
-    const endDateTime = `${orderData.deliveryDate}T11:00:00`;
-
-    await calendarService.createEvent(googleAccessToken, {
-      summary,
-      description,
-      start: { dateTime: startDateTime, timeZone: 'Europe/Kyiv' },
-      end: { dateTime: endDateTime, timeZone: 'Europe/Kyiv' }
-    });
-  };
-
   const handleLogin = async () => {
     try { 
       const result = await signInWithPopup(auth, googleProvider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
-      if (credential?.accessToken) {
-        setGoogleAccessToken(credential.accessToken);
-        sessionStorage.setItem('google_access_token', credential.accessToken);
+      // For backward compatibility
+      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, 'users', result.user.uid), {
+          uid: result.user.uid,
+          email: result.user.email,
+          role: 'manager',
+          displayName: result.user.displayName,
+          createdAt: new Date().toISOString()
+        });
       }
     } catch (error) { 
       console.error("Login failed", error); 
@@ -821,9 +804,6 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
       }
       try {
         await orderService.createOrder(db, data, draftOrderItems, techSpecs, logAction);
-        if (googleAccessToken && data.deliveryDate) {
-          syncWithCalendar(data, draftOrderItems);
-        }
         setIsModalOpen(false); 
         setDraftOrderItems([]);
       } catch (err: any) { 
@@ -845,9 +825,6 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
           const items = itemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as OrderItem));
           
           await orderService.updateStatus(db, editingItem.id, data.status, oldVal, items, products, techSpecs, logAction);
-          if (googleAccessToken && data.deliveryDate) {
-            syncWithCalendar(data, items);
-          }
         } else {
           if (activeTab === 'clients') data.updatedAt = serverTimestamp();
           await updateDoc(doc(db, col, editingItem.id), data);
@@ -1038,9 +1015,10 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
   if (loading || (user && !currentUserData)) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-navy-dark text-white p-6">
       <div className="relative mb-10">
-        <div className="w-20 h-20 border-2 border-white/5 rounded-[24px] flex items-center justify-center animate-pulse">
-          <img src="/feelup-icon.svg" className="w-10 h-10 opacity-50 grayscale" alt="" />
-        </div>
+        <div className="w-24 h-24 bg-navy-dark rounded-[32px] flex items-center justify-center mb-8 shadow-2xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-electric/20 to-transparent"></div>
+                  <img src="/logo.png" alt="Logo" className="w-14 h-14 relative z-10 transition-transform duration-500" />
+                </div>
         <div className="absolute inset-0 border-t-2 border-violet-electric rounded-[24px] animate-spin"></div>
       </div>
       <div className="text-center">
@@ -1318,32 +1296,6 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
           {activeTab === 'dashboard' ? (
             <div className="flex flex-col gap-4 lg:gap-6">
               {/* Layout for Mobile vs Desktop is handled below with responsive classes */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6">
-                
-                {/* Left/Main Column */}
-                <div className="lg:col-span-8 flex flex-col gap-4 lg:gap-6">
-                  
-                  {/* Mobile Header + Stats Section */}
-                  <div className="lg:hidden flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h2 className="text-base font-black text-text-main leading-tight">FEEL UP Studio</h2>
-                        <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Business System</p>
-                      </div>
-                    </div>
-                    
-                    <HeliumTankCard balance={dashboardStats.heliumBalance} onCalibrate={() => setIsHeliumModalOpen(true)} />
-                    
-                    {/* Compact 2x2 grid for metric cards on mobile to fit screen */}
-                    <div className="grid grid-cols-2 gap-2">
-                      <StatCard label="Прибуток" value={`${dashboardStats.totalMargin} ₴`} icon={Wallet} color="bg-indigo-500" trend="Маржа" up={true} />
-                      <StatCard label="Дохід" value={`${dashboardStats.totalIncome} ₴`} icon={ArrowUpRight} color="bg-emerald-500" trend="Гроші" up={true} />
-                      <StatCard label="Витрати" value={`${dashboardStats.totalExpenses} ₴`} icon={ArrowDownRight} color="bg-rose-500" trend="Разом" up={false} />
-                      <StatCard label="Сер. чек" value={`${dashboardStats.avgCheck} ₴`} icon={TrendingUp} color="bg-amber-500" trend="ОК" up={true} />
-                    </div>
-                  </div>
-
-                  {/* Desktop Stats (Enlarged but proportional) */}
                   <div className="hidden lg:grid grid-cols-4 gap-4">
                     <StatCard label="Чистий прибуток" value={`${dashboardStats.totalMargin} ₴`} icon={Wallet} color="bg-indigo-500" trend="Маржа" up={true} isLarge />
                     <StatCard label="Дохід" value={`${dashboardStats.totalIncome} ₴`} icon={ArrowUpRight} color="bg-emerald-500" trend="Гроші" up={true} isLarge />
