@@ -114,7 +114,7 @@ import { ExpenseForm } from './components/forms/ExpenseForm';
 import { UserForm } from './components/forms/UserForm';
 import { DetailItemForm } from './components/forms/DetailItemForm';
 import { useInventory } from './hooks/useInventory';
-import { CalendarCard } from './components/dashboard/CalendarCard';
+
 import { calculateFreeStockInTransaction } from './services/inventoryTransactionService';
 import { orderService } from './services/orderService';
 import { purchaseService } from './services/purchaseService';
@@ -1315,7 +1315,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     <HeliumTankCard balance={dashboardStats.heliumBalance} onCalibrate={() => setIsHeliumModalOpen(true)} />
                   </div>
                   
-                  <CalendarCard token={googleAccessToken} onLogin={handleLogin} />
+
                   
                   <StockAlerts alerts={stockAlerts} inventory={inventory} />
                 </div>
