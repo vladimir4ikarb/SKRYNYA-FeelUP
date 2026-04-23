@@ -193,7 +193,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
           parts: [{ text: m.text }]
         })),
         config: {
-          systemInstruction: "Ви - AI-асистент для студії аеродизайну 'FeelUP'. Допомагайте з управлінням замовленнями, складом та клієнтами. Будьте лаконічними та професійними. Вся аналітика (дохід, склад, гелій) обчислюється динамічно на основі первинних записів (orderItems, purchaseItems). Система захищає виконані замовлення та оплачені закупівлі від змін для збереження цілісності даних."
+          systemInstruction: "Ви - AI-асистент для студії аеродизайну 'Feel UP'. Допомагайте з управлінням замовленнями, складом та клієнтами. Будьте лаконічними та професійними. Вся аналітика (дохід, склад, гелій) обчислюється динамічно на основі первинних записів (orderItems, purchaseItems). Система захищає виконані замовлення та оплачені закупівлі від змін для збереження цілісності даних."
         }
       });
       
@@ -375,7 +375,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     element.innerHTML = `
       <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 40px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px;">
         <div>
-          <h1 style="color: #4f46e5; margin: 0; font-size: 32px;">FEELUP</h1>
+          <h1 style="color: #4f46e5; margin: 0; font-size: 32px;">Feel UP</h1>
           <p style="color: #64748b; margin: 4px 0;">Студія повітряних кульок</p>
         </div>
         <div style="text-align: right;">
@@ -427,7 +427,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
       
       <div style="margin-top: 60px; text-align: center; border-top: 1px dashed #e2e8f0; padding-top: 20px;">
         <p style="color: #94a3b8; font-size: 14px;">Дякуємо за замовлення! Приходьте ще :)</p>
-        <p style="color: #cbd5e1; font-size: 10px; margin-top: 8px;">FeelUP Balloon Management System</p>
+        <p style="color: #cbd5e1; font-size: 10px; margin-top: 8px;">Feel UP Balloon Management System</p>
       </div>
     `;
     
@@ -1162,7 +1162,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
   if (loading || (user && !currentUserData)) return (
     <div className="min-h-screen flex items-center justify-center bg-background flex-col gap-4">
       <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-text-muted font-bold animate-pulse">Завантаження системи СКРИНЯ...</p>
+      <p className="text-text-muted font-bold animate-pulse">Завантаження системи Feel UP...</p>
     </div>
   );
 
@@ -1170,10 +1170,10 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full bg-card border border-border p-12 rounded-[40px] shadow-2xl text-center">
         <div className="w-20 h-20 flex items-center justify-center mx-auto mb-8">
-          <img src="/skrynya_icon.svg" className="w-full h-full object-contain" alt="Logo" />
+          <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="Logo" />
         </div>
-        <h1 className="text-4xl font-head font-black mb-1 text-text-main tracking-tighter" style={{ color: '#70489d' }}>СКРИНЯ</h1>
-        <p className="text-text-muted mb-10 text-sm uppercase tracking-widest font-medium">Важливе під контролем</p>
+        <h1 className="text-4xl font-head font-black mb-1 text-text-main tracking-tighter" style={{ color: '#70489d' }}>Feel UP</h1>
+        <p className="text-text-muted mb-10 text-sm uppercase tracking-widest font-medium">студія аеродизайну</p>
         
         <button onClick={handleLogin} className="w-full flex items-center justify-center gap-4 btn-primary text-lg py-5">
           <LogIn className="w-6 h-6" /> Увійти через Google
@@ -1192,7 +1192,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
         </div>
         <h1 className="text-3xl font-black mb-4 text-text-main">Доступ заборонено</h1>
         <p className="text-text-muted mb-8 text-base">
-          На жаль, ваша електронна адреса <span className="font-bold text-text-main">{user.email}</span> не має прав доступу до системи СКРИНЯ.
+          На жаль, ваша електронна адреса <span className="font-bold text-text-main">{user.email}</span> не має прав доступу до системи Feel UP.
         </p>
         <div className="flex flex-col gap-3">
           <button onClick={() => signOut(auth)} className="w-full btn-primary bg-slate-800 hover:bg-slate-900 py-4 font-bold">
@@ -1251,7 +1251,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
 
               <div className="hidden lg:block">
                 <h2 className="text-xl lg:text-2xl font-bold text-text-main mb-0.5">
-                  {activeTab === 'dashboard' ? 'FeelUP - студія аеродизайну' : 
+                  {activeTab === 'dashboard' ? 'Feel UP - студія аеродизайну' : 
                    activeTab === 'products' ? 'Управління складом' : 
                    activeTab === 'sales' ? 'Журнал продажів' : 
                    activeTab === 'clients' ? 'База клієнтів' : 
@@ -1260,7 +1260,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                    activeTab === 'info' ? 'Про програму' : 'Технічні норми'}
                 </h2>
                 <p className="text-slate-500 text-sm lg:text-base">
-                  {activeTab === 'dashboard' ? '' : (activeTab === 'info' ? 'Як працює ваш FeelUP' : 'Ось що відбувається сьогодні')}
+                  {activeTab === 'dashboard' ? '' : (activeTab === 'info' ? 'Як працює ваш Feel UP' : 'Ось що відбувається сьогодні')}
                 </p>
               </div>
             </div>
@@ -1295,7 +1295,7 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                   <div className="lg:hidden flex flex-col gap-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h2 className="text-base font-black text-text-main leading-tight">FeelUP Studio</h2>
+                        <h2 className="text-base font-black text-text-main leading-tight">Feel UP Studio</h2>
                         <p className="text-slate-400 text-[9px] font-bold uppercase tracking-wider">Business System</p>
                       </div>
                     </div>

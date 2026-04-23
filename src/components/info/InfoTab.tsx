@@ -9,7 +9,7 @@ export const InfoTab = () => (
           <TrendingUp className="w-8 h-8" />
         </div>
         <div>
-          <h3 className="text-3xl font-bold text-slate-900">FeelUP</h3>
+          <h3 className="text-3xl font-bold text-slate-900">Feel UP</h3>
           <p className="text-slate-500 text-lg">Ваш помічник у світі кульок</p>
         </div>
       </div>

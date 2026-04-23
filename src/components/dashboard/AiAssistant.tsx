@@ -43,7 +43,7 @@ export const AiAssistant = React.memo(({ chatHistory, isLoading, onSendMessage, 
           <div className="w-6 h-6 bg-primary/10 rounded-lg flex items-center justify-center">
             <Zap className="w-3.5 h-3.5 text-primary" />
           </div>
-          <h3 className="text-sm font-bold text-text-main">FeelUP Асистент</h3>
+          <h3 className="text-sm font-bold text-text-main">Feel UP Асистент</h3>
         </div>
         <div className="flex items-center gap-1 lg:gap-2">
           {isLoading && <div className="w-3.5 h-3.5 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2"></div>}
