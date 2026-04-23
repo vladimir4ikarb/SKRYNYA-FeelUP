@@ -20,7 +20,7 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('https://www.googleapis.com/auth/calendar.events');
 googleProvider.addScope('https://www.googleapis.com/auth/calendar.readonly');
 
-export { db, auth, googleProvider };
+export { db, auth, googleProvider, GoogleAuthProvider };
 
 export enum OperationType {
   CREATE = 'create',
