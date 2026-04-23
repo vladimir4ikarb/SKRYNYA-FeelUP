@@ -17,6 +17,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || "(default)");
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
+
 export { db, auth, googleProvider };
 
 export enum OperationType {
