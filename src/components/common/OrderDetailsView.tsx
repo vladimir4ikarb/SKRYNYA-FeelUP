@@ -67,23 +67,29 @@ export const OrderDetailsView = ({
           <thead>
             <tr className="bg-background/50">
               <th className="px-4 lg:px-8 py-4 text-[10px] lg:text-xs font-black text-text-muted uppercase tracking-widest leading-none">Товар</th>
-              <th className="px-4 lg:px-8 py-4 text-[10px] lg:text-xs font-black text-text-muted uppercase tracking-widest leading-none">Кіл-ть</th>
+              <th className="px-4 lg:px-8 py-4 text-[10px] lg:text-xs font-black text-text-muted uppercase tracking-widest leading-none text-center">Кіл-ть</th>
+              {selectedOrderId && <th className="px-4 lg:px-8 py-4 text-[10px] lg:text-xs font-black text-text-muted uppercase tracking-widest leading-none text-center">Брак</th>}
               <th className="px-4 lg:px-8 py-4 text-[10px] lg:text-xs font-black text-text-muted uppercase tracking-widest leading-none text-right">Сума</th>
               <th className="px-4 lg:px-8 py-4 text-[10px] lg:text-xs font-black text-text-muted uppercase tracking-widest leading-none text-right">Дії</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border">
+          <tbody className="divide-y divide-border text-sm lg:text-base">
             {items.map(item => {
               const product = products.find(p => p.id === item.productId);
               const unitPrice = (item as any).costPrice ?? item.price ?? 0;
               return (
                 <tr key={item.id} className="hover:bg-background/30 transition-colors">
                   <td className="px-4 lg:px-8 py-4">
-                    <p className="font-bold text-text-main text-sm lg:text-base leading-tight break-words max-w-[120px] lg:max-w-none">{product?.name || 'Невідомий'}</p>
+                    <p className="font-bold text-text-main leading-tight break-words max-w-[120px] lg:max-w-none">{product?.name || 'Невідомий'}</p>
                     <p className="text-[10px] text-text-muted mt-0.5">{unitPrice} ₴ / шт</p>
                   </td>
-                  <td className="px-4 lg:px-8 py-4 font-black text-text-muted text-sm">{item.qty}</td>
-                  <td className="px-4 lg:px-8 py-4 font-black text-text-main text-sm lg:text-base text-right">{item.qty * unitPrice} ₴</td>
+                  <td className="px-4 lg:px-8 py-4 font-black text-text-muted text-center">{item.qty}</td>
+                  {selectedOrderId && (
+                    <td className="px-4 lg:px-8 py-4 font-black text-rose-400 text-center">
+                      {(item as OrderItem).defect || 0}
+                    </td>
+                  )}
+                  <td className="px-4 lg:px-8 py-4 font-black text-text-main text-right">{item.qty * unitPrice} ₴</td>
                   <td className="px-4 lg:px-8 py-4 text-right">
                     {!isCompleted && (
                       <button onClick={() => onDeleteItem(item, selectedOrderId ? 'order' : 'purchase')} className="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-500/10 rounded-lg transition-all">
@@ -94,6 +100,18 @@ export const OrderDetailsView = ({
                 </tr>
               );
             })}
+            {/* Total Row */}
+            <tr className="bg-slate-50/50">
+              <td colSpan={selectedOrderId ? 3 : 2} className="px-4 lg:px-8 py-6 text-right">
+                <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Загальна сума:</span>
+              </td>
+              <td className="px-4 lg:px-8 py-6 text-right">
+                <span className="text-lg lg:text-xl font-black text-primary">
+                  {items.reduce((acc, item) => acc + (item.qty * ((item as any).costPrice ?? item.price ?? 0)), 0)} ₴
+                </span>
+              </td>
+              <td></td>
+            </tr>
           </tbody>
         </table>
       </div>

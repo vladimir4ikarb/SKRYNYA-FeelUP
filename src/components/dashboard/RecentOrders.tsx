@@ -9,24 +9,37 @@ interface RecentOrdersProps {
 }
 
 export const RecentOrders = React.memo(({ orders, clients, orderTotals, onViewAll }: RecentOrdersProps) => (
-  <div className="saas-card overflow-hidden h-auto lg:h-[380px] flex flex-col">
-    <div className="p-4 lg:p-5 border-b border-border flex items-center justify-between bg-card/50">
-      <h3 className="text-base lg:text-lg font-black text-text-main">Останні замовлення</h3>
-      <button onClick={onViewAll} className="text-primary font-black hover:underline text-xs bg-primary/10 px-3 py-1 rounded-lg transition-all">Всі</button>
+  <div className="saas-card overflow-hidden flex flex-col h-full min-h-[420px]">
+    <div className="p-6 lg:p-8 border-b border-slate-100 flex items-center justify-between">
+      <div>
+        <p className="text-caption mb-0.5">Операційна діяльність</p>
+        <h3 className="text-xl font-black text-text-main tracking-tight">Останні замовлення</h3>
+      </div>
+      <button 
+        onClick={onViewAll} 
+        className="px-4 py-2 bg-violet-soft text-violet-electric font-black hover:bg-violet-electric hover:text-white rounded-xl transition-all text-xs uppercase tracking-widest"
+      >
+        Всі
+      </button>
     </div>
-    <div className="flex-1 overflow-y-auto custom-scrollbar">
-      <div className="divide-y divide-border">
+    <div className="flex-1 overflow-y-auto no-scrollbar">
+      <div className="divide-y divide-slate-50">
         {orders.slice(0, 10).map((order) => (
-          <div key={order.id} className="p-4 lg:px-5 lg:py-3 hover:bg-background/50 transition-colors flex items-center justify-between gap-4">
+          <div key={order.id} className="px-6 lg:px-8 py-5 hover:bg-ice-white transition-all flex items-center justify-between gap-6 group">
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-text-main text-sm">#{order.id.slice(-4)}</p>
-              <p className="text-[11px] text-text-muted truncate font-medium">{clients.find(c => c.id === order.clientId)?.name || 'Невідомий'}</p>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-violet-electric/40 group-hover:bg-violet-electric transition-colors"></span>
+                <p className="font-bold text-text-main text-sm tracking-tight">#{order.id.slice(-6).toUpperCase()}</p>
+              </div>
+              <p className="text-[12px] text-slate-500 truncate font-semibold">
+                {clients.find(c => c.id === order.clientId)?.name || 'Гість'}
+              </p>
             </div>
             <div className="text-right shrink-0">
-              <p className="font-bold text-text-main text-sm">{orderTotals[order.id] || 0} ₴</p>
-              <span className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-tight mt-1 ${
-                order.status === 'Виконано' ? 'bg-emerald-500/10 text-emerald-500' : 
-                order.status === 'Скасовано' ? 'bg-rose-500/10 text-rose-500' : 'bg-amber-500/10 text-amber-500'
+              <p className="font-black text-text-main text-base mb-1.5">{orderTotals[order.id]?.toLocaleString() || 0} ₴</p>
+              <span className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
+                order.status === 'Виконано' ? 'bg-emerald-500/10 text-emerald-600' : 
+                order.status === 'Скасовано' ? 'bg-rose-500/10 text-rose-600' : 'bg-amber-500/10 text-amber-600'
               }`}>
                 {order.status}
               </span>
@@ -34,7 +47,9 @@ export const RecentOrders = React.memo(({ orders, clients, orderTotals, onViewAl
           </div>
         ))}
         {orders.length === 0 && (
-          <div className="px-5 py-20 text-center text-text-muted italic text-sm">Замовлень поки немає</div>
+          <div className="px-8 py-24 text-center">
+            <p className="text-sm font-bold text-slate-400">Замовлень поки немає</p>
+          </div>
         )}
       </div>
     </div>

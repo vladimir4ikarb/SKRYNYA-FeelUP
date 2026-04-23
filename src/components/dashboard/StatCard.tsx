@@ -12,16 +12,20 @@ interface StatCardProps {
 }
 
 export const StatCard = React.memo(({ label, value, icon: Icon, color, trend, up, isLarge }: StatCardProps) => (
-  <div className={`saas-card transition-all duration-300 group hover:border-primary/30 ${isLarge ? 'p-5 lg:p-6' : 'p-3 lg:p-4'}`}>
-    <div className="flex items-center justify-between mb-2">
-      <div className={`${color} ${isLarge ? 'w-10 h-10 lg:w-12 lg:h-12' : 'w-8 h-8 lg:w-10 lg:h-10'} rounded-xl flex items-center justify-center text-white shadow-lg shadow-current/20 group-hover:scale-105 transition-transform`}>
-        <Icon className={isLarge ? "w-5 h-5 lg:w-6 lg:h-6" : "w-4 h-4 lg:w-5 lg:h-5"} />
+  <div className={`saas-card transition-all duration-300 group ${isLarge ? 'p-6 lg:p-7' : 'p-4 lg:p-5'}`}>
+    <div className="flex items-center justify-between mb-5">
+      <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-2xl flex items-center justify-center ${color.replace('bg-', 'bg-opacity-10 ')} ${color.replace('bg-', 'text-')} group-hover:scale-110 transition-all duration-500`}>
+        <Icon className={isLarge ? "w-6 h-6 lg:w-7 lg:h-7" : "w-5 h-5 lg:w-6 lg:h-6"} />
       </div>
-      <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] lg:text-xs font-bold ${up ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
-        {trend}
+      <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-[10px] lg:text-xs font-black uppercase tracking-wider ${up ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}`}>
+        {up ? '↑' : '↓'} {trend}
       </div>
     </div>
-    <p className={`text-text-muted font-bold ${isLarge ? 'text-[10px] lg:text-xs' : 'text-[9px] lg:text-[10px]'} uppercase tracking-wider mb-0.5`}>{label}</p>
-    <h3 className={`${isLarge ? 'text-xl lg:text-2xl' : 'text-base lg:text-lg'} font-black text-text-main leading-none tracking-tight`}>{value}</h3>
+    <div>
+      <p className="text-caption mb-1">{label}</p>
+      <h3 className={`${isLarge ? 'text-2xl lg:text-3xl' : 'text-xl lg:text-2xl'} font-black text-text-main leading-tight tracking-tight`}>
+        {value}
+      </h3>
+    </div>
   </div>
 ));

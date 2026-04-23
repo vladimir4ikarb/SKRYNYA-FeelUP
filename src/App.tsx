@@ -70,7 +70,8 @@ import {
   serverTimestamp,
   handleFirestoreError,
   OperationType,
-  User as FirebaseUser
+  User as FirebaseUser,
+  GoogleAuthProvider
 } from './firebase';
 
 import { GoogleGenAI } from "@google/genai";
@@ -94,6 +95,7 @@ import { RecentOrders } from './components/dashboard/RecentOrders';
 import { ProfitChart } from './components/dashboard/ProfitChart';
 import { HeliumTankCard } from './components/dashboard/HeliumTankCard';
 import { StockAlerts } from './components/dashboard/StockAlerts';
+import { CalendarCard } from './components/dashboard/CalendarCard';
 import { AiAssistant } from './components/dashboard/AiAssistant';
 import { InventoryTab } from './components/inventory/InventoryTab';
 import { SalesTab } from './components/sales/SalesTab';
@@ -113,7 +115,13 @@ import { ExpenseForm } from './components/forms/ExpenseForm';
 import { UserForm } from './components/forms/UserForm';
 import { DetailItemForm } from './components/forms/DetailItemForm';
 import { useInventory } from './hooks/useInventory';
+import { CalendarCard } from './components/dashboard/CalendarCard';
 import { calculateFreeStockInTransaction } from './services/inventoryTransactionService';
+import { orderService } from './services/orderService';
+import { purchaseService } from './services/purchaseService';
+import { AuditLogTab } from './components/audit/AuditLogTab';
+import { migrationService } from './services/migrationService';
+import { calendarService } from './services/calendarService';
 
 // --- Main App ---
 
@@ -122,7 +130,7 @@ const ALLOWED_EMAILS = ['vladimir.chuguev@gmail.com', 'feelup.balloons@gmail.com
 export default function App() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'sales' | 'clients' | 'purchases' | 'expenses' | 'specs' | 'admin' | 'info' | 'logs' | 'trash'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'sales' | 'clients' | 'purchases' | 'expenses' | 'specs' | 'admin' | 'info' | 'audit' | 'trash'>('dashboard');
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [selectedPurchaseId, setSelectedPurchaseId] = useState<string | null>(null);
   
@@ -174,6 +182,7 @@ export default function App() {
   const [draftPurchaseItems, setDraftPurchaseItems] = useState<{ productId: string, qty: number, price: number }[]>([]);
   const [draftOrderItems, setDraftOrderItems] = useState<{ productId: string, qty: number, price: number, defect: number }[]>([]);
   const [productSearch, setProductSearch] = useState('');
+  const [isMaintenanceRunning, setIsMaintenanceRunning] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -697,7 +706,8 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     const totalExpenses = totalPurchaseCost + totalOperationalExpenses + completedOrders.reduce((acc, o) => acc + (o.extraCosts || 0), 0);
 
     const totalOrders = orders.length;
-    const avgCheck = totalOrders > 0 ? Math.round(totalIncome / totalOrders) : 0;
+    const completedCount = completedOrders.length;
+    const avgCheck = completedCount > 0 ? Math.round(totalIncome / completedCount) : 0;
     const heliumBalance = heliumTanks.reduce((acc, t) => acc + t.currentVolumeM3, 0);
 
     return { totalIncome, totalExpenses, totalMargin, totalOrders, avgCheck, heliumBalance };
@@ -719,8 +729,41 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     });
   }, [orders, orderTotals]);
 
+  const [googleAccessToken, setGoogleAccessToken] = useState<string | null>(sessionStorage.getItem('google_access_token'));
+
+  const syncWithCalendar = async (orderData: any, items: any[]) => {
+    if (!googleAccessToken || !orderData.deliveryDate) return;
+    
+    const client = clients.find(c => c.id === orderData.clientId);
+    const summary = `Замовлення: ${client?.name || 'Клієнт'} (${orderData.deliveryDate})`;
+    const description = items.map(item => {
+      const p = products.find(prod => prod.id === item.productId);
+      return `${p?.name || 'Товар'} x ${item.qty}`;
+    }).join('\n') + (orderData.comment ? `\n\nКоментар: ${orderData.comment}` : '');
+
+    // Assuming delivery time is 10:00 AM if not specified, duration 1h
+    const startDateTime = `${orderData.deliveryDate}T10:00:00`;
+    const endDateTime = `${orderData.deliveryDate}T11:00:00`;
+
+    await calendarService.createEvent(googleAccessToken, {
+      summary,
+      description,
+      start: { dateTime: startDateTime, timeZone: 'Europe/Kyiv' },
+      end: { dateTime: endDateTime, timeZone: 'Europe/Kyiv' }
+    });
+  };
+
   const handleLogin = async () => {
-    try { await signInWithPopup(auth, googleProvider); } catch (error) { console.error("Login failed", error); }
+    try { 
+      const result = await signInWithPopup(auth, googleProvider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      if (credential?.accessToken) {
+        setGoogleAccessToken(credential.accessToken);
+        sessionStorage.setItem('google_access_token', credential.accessToken);
+      }
+    } catch (error) { 
+      console.error("Login failed", error); 
+    }
   };
 
   const saveItem = async (e: React.FormEvent) => {
@@ -762,20 +805,9 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
         return;
       }
       try {
-        const batch = writeBatch(db);
-        const purchaseRef = doc(collection(db, 'purchases'));
-        const totalAmount = draftPurchaseItems.reduce((acc, item) => acc + (item.qty * item.price), 0) + (data.deliveryCost || 0);
-        const purchaseData = { ...data, totalAmount, isDeleted: false };
-        batch.set(purchaseRef, purchaseData);
-        
-        draftPurchaseItems.forEach(item => {
-          const itemRef = doc(collection(db, 'purchaseItems'));
-          batch.set(itemRef, { ...item, costPrice: item.price, total: item.qty * item.price, purchaseId: purchaseRef.id, isDeleted: false });
-        });
-        
-        await batch.commit();
-        logAction('CREATE_PURCHASE_WITH_ITEMS', { id: purchaseRef.id, itemsCount: draftPurchaseItems.length });
-        setIsModalOpen(false); setDraftPurchaseItems([]);
+        await purchaseService.createPurchase(db, data, draftPurchaseItems, logAction);
+        setIsModalOpen(false); 
+        setDraftPurchaseItems([]);
       } catch (err) { handleFirestoreError(err, OperationType.CREATE, 'purchases'); }
       finally { setIsSubmitting(false); }
       return;
@@ -788,72 +820,16 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
         return;
       }
       try {
-        const totalAmount = draftOrderItems.reduce((acc, item) => acc + (item.qty * item.price), 0);
-        if (data.status === 'Виконано') {
-          const heliumQuery = query(collection(db, 'helium'), limit(1));
-          const heliumSnap = await getDocs(heliumQuery);
-
-          await runTransaction(db, async (transaction) => {
-            const orderRef = doc(collection(db, 'orders'));
-            transaction.set(orderRef, { ...data, totalAmount, isDeleted: false });
-
-            for (const item of draftOrderItems) {
-              const stock = await calculateFreeStockInTransaction(db, transaction, item.productId);
-              const requested = item.qty + (item.defect || 0);
-              if (requested > stock.free) {
-                throw new Error(`Недостатньо вільного залишку для товару ${item.productId}. Вільно: ${stock.free}, потрібно: ${requested}`);
-              }
-
-              const itemRef = doc(collection(db, 'orderItems'));
-              transaction.set(itemRef, { ...item, total: item.qty * item.price, orderId: orderRef.id, isDeleted: false });
-
-              const productRef = doc(db, 'products', item.productId);
-              const productSnap = await transaction.get(productRef);
-              if (productSnap.exists()) {
-                const pData = productSnap.data() as Product;
-
-                // Subtract Helium
-                const heliumVolume = pData.heliumVolume || techSpecs.find(s => s.size === pData.size)?.heliumVolume || 0;
-                if (heliumVolume > 0 && !heliumSnap.empty) {
-                  const hRef = doc(db, 'helium', heliumSnap.docs[0].id);
-                  const hSnap = await transaction.get(hRef);
-                  if (hSnap.exists()) {
-                    const consumedM3 = (heliumVolume * item.qty) / 1000;
-                    transaction.update(hRef, { currentVolumeM3: Math.max(0, hSnap.data().currentVolumeM3 - consumedM3) });
-                  }
-                }
-              }
-            }
-          });
-        } else if (data.status === 'В обробці') {
-          await runTransaction(db, async (transaction) => {
-            const orderRef = doc(collection(db, 'orders'));
-            transaction.set(orderRef, { ...data, totalAmount, isDeleted: false });
-
-            for (const item of draftOrderItems) {
-              const stock = await calculateFreeStockInTransaction(db, transaction, item.productId);
-              if (item.qty > stock.free) {
-                throw new Error(`Недостатньо вільного залишку для товару ${item.productId}. Вільно: ${stock.free}, потрібно: ${item.qty}`);
-              }
-              const itemRef = doc(collection(db, 'orderItems'));
-              transaction.set(itemRef, { ...item, total: item.qty * item.price, orderId: orderRef.id, isDeleted: false });
-            }
-          });
-        } else {
-          // Чернетка / Скасовано: дозволяємо зберегти без резервування складу
-          const batch = writeBatch(db);
-          const orderRef = doc(collection(db, 'orders'));
-          batch.set(orderRef, { ...data, totalAmount, isDeleted: false });
-          draftOrderItems.forEach(item => {
-            const itemRef = doc(collection(db, 'orderItems'));
-            batch.set(itemRef, { ...item, total: item.qty * item.price, orderId: orderRef.id, isDeleted: false });
-          });
-          await batch.commit();
+        await orderService.createOrder(db, data, draftOrderItems, techSpecs, logAction);
+        if (googleAccessToken && data.deliveryDate) {
+          syncWithCalendar(data, draftOrderItems);
         }
-        
-        logAction('CREATE_ORDER_WITH_ITEMS', { itemsCount: draftOrderItems.length });
-        setIsModalOpen(false); setDraftOrderItems([]);
-      } catch (err) { handleFirestoreError(err, OperationType.CREATE, 'orders'); }
+        setIsModalOpen(false); 
+        setDraftOrderItems([]);
+      } catch (err: any) { 
+        alert(err.message || "Помилка при створенні замовлення");
+        handleFirestoreError(err, OperationType.CREATE, 'orders'); 
+      }
       finally { setIsSubmitting(false); }
       return;
     }
@@ -868,47 +844,10 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
           const itemsSnap = await getDocs(orderItemsQuery);
           const items = itemsSnap.docs.map(d => ({ id: d.id, ...d.data() } as OrderItem));
           
-          const heliumQuery = query(collection(db, 'helium'), limit(1));
-          const heliumSnap = await getDocs(heliumQuery);
-
-          await runTransaction(db, async (transaction) => {
-            // Only proceed if moving to/from 'Виконано'
-            if (data.status === 'Виконано' || oldVal.status === 'Виконано') {
-              const modifier = data.status === 'Виконано' ? -1 : 1;
-              
-              for (const item of items) {
-                if (data.status === 'Виконано') {
-                  const stock = await calculateFreeStockInTransaction(db, transaction, item.productId, editingItem.id);
-                  const requested = item.qty + (item.defect || 0);
-                  if (requested > stock.free) {
-                    throw new Error(`Недостатньо вільного залишку для товару ${item.productId}. Вільно: ${stock.free}, потрібно: ${requested}`);
-                  }
-                }
-
-                const productRef = doc(db, 'products', item.productId);
-                const productSnap = await transaction.get(productRef);
-                if (productSnap.exists()) {
-                  const pData = productSnap.data() as Product;
-                  
-                  // Update Helium Balance
-                  const heliumVolume = pData.heliumVolume || techSpecs.find(s => s.size === pData.size)?.heliumVolume || 0;
-                  if (heliumVolume > 0 && !heliumSnap.empty) {
-                    const hDoc = heliumSnap.docs[0];
-                    const hRef = doc(db, 'helium', hDoc.id);
-                    const hSnap = await transaction.get(hRef);
-                    if (hSnap.exists()) {
-                      const hData = hSnap.data();
-                      const consumedM3 = (heliumVolume * item.qty) / 1000;
-                      transaction.update(hRef, { currentVolumeM3: Math.max(0, hData.currentVolumeM3 + (consumedM3 * modifier)) });
-                    }
-                  }
-                }
-              }
-            }
-            
-            // Finally update the order status
-            transaction.update(doc(db, col, editingItem.id), data);
-          });
+          await orderService.updateStatus(db, editingItem.id, data.status, oldVal, items, products, techSpecs, logAction);
+          if (googleAccessToken && data.deliveryDate) {
+            syncWithCalendar(data, items);
+          }
         } else {
           if (activeTab === 'clients') data.updatedAt = serverTimestamp();
           await updateDoc(doc(db, col, editingItem.id), data);
@@ -937,73 +876,22 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     const data: any = Object.fromEntries(formData.entries());
     ['price', 'qty', 'defect'].forEach(key => { if (data[key]) data[key] = Number(data[key]); });
     
-    const col = itemModalType === 'order' ? 'orderItems' : 'purchaseItems';
-    const parentId = itemModalType === 'order' ? selectedOrderId : selectedPurchaseId;
-    const parentKey = itemModalType === 'order' ? 'orderId' : 'purchaseId';
-    
     if (itemModalType === 'order') {
       try {
-        await runTransaction(db, async (transaction) => {
-          const prodId = data.productId;
-          const productRef = doc(db, 'products', prodId);
-          const productSnap = await transaction.get(productRef);
-          if (!productSnap.exists()) throw new Error("Товар не знайдено");
-          const product = productSnap.data();
+        const order = orders.find(o => o.id === selectedOrderId);
+        const product = products.find(p => p.id === data.productId);
+        if (!order || !product) throw new Error("Замовлення або товар не знайдено");
 
-          const orderRef = doc(db, 'orders', parentId!);
-          const orderSnap = await transaction.get(orderRef);
-          if (!orderSnap.exists()) throw new Error("Замовлення не знайдено");
-          const order = orderSnap.data();
-
-          // Check stock if completed
-          if (order.status === 'Виконано') {
-            const stock = await calculateFreeStockInTransaction(db, transaction, prodId, parentId!);
-            const requested = data.qty + (data.defect || 0);
-            if (requested > stock.free) {
-              throw new Error(`Недостатньо вільного залишку! Вільно: ${stock.free}, потрібно: ${requested}`);
-            }
-            
-            // Helium update
-            if (product.heliumVolume) {
-              const heliumQuery = query(collection(db, 'helium'), limit(1));
-              const heliumSnap = await getDocs(heliumQuery);
-              if (!heliumSnap.empty) {
-                const hDoc = heliumSnap.docs[0];
-                const hRef = doc(db, 'helium', hDoc.id);
-                // volume is in liters in product, m3 in tank? No, user says m3 in tank, and liters in product probably.
-                // 1m3 = 1000L.
-                const consumedM3 = (product.heliumVolume * data.qty) / 1000;
-                transaction.update(hRef, { currentVolumeM3: Math.max(0, hDoc.data().currentVolumeM3 - consumedM3) });
-              }
-            }
-          }
-
-          if (order.status === 'В обробці') {
-            const stock = await calculateFreeStockInTransaction(db, transaction, prodId);
-            if (data.qty > stock.free) {
-              throw new Error(`Недостатньо вільного залишку! Вільно: ${stock.free}, потрібно: ${data.qty}`);
-            }
-          }
-
-          const finalData = { ...data, total: data.qty * data.price, [parentKey]: parentId, defect: data.defect || 0, isDeleted: false };
-          const newDocRef = doc(collection(db, col));
-          transaction.set(newDocRef, finalData);
-          logAction('CREATE_DETAIL_TX', { collection: col, id: newDocRef.id }, null, finalData);
-        });
+        await orderService.addItem(db, selectedOrderId!, order, data, product, logAction);
         setIsItemModalOpen(false);
       } catch (err: any) {
-        alert(err.message || "Помилка транзакції");
+        alert(err.message || "Помилка при додаванні позиції");
       } finally { setIsSubmitting(false); }
     } else {
       try {
-        await runTransaction(db, async (transaction) => {
-          const finalData = { ...data, costPrice: data.price, total: data.qty * data.price, [parentKey]: parentId, isDeleted: false };
-          const newDocRef = doc(collection(db, col));
-          transaction.set(newDocRef, finalData);
-          logAction('CREATE_DETAIL_PURCHASE_TX', { collection: col, id: newDocRef.id }, null, finalData);
-        });
+        await purchaseService.addItem(db, selectedPurchaseId!, data, logAction);
         setIsItemModalOpen(false);
-      } catch (err) { handleFirestoreError(err, OperationType.CREATE, col); }
+      } catch (err) { handleFirestoreError(err, OperationType.CREATE, 'purchaseItems'); }
       finally { setIsSubmitting(false); }
     }
   };
@@ -1017,70 +905,43 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
     setIsSubmitting(true);
 
     try {
-      const items = orderItems.filter(oi => oi.orderId === orderId);
-      const activeItems = items.filter(item => {
-        const p = products.find(prod => prod.id === item.productId);
-        return p && !p.isArchived;
-      });
-
-      if (activeItems.length === 0) {
-        alert('Неможливо скопіювати замовлення: всі товари в ньому архівовані.');
-        return;
-      }
-      const priceSnapshotItems = activeItems.map(item => {
-        const currentProduct = products.find(p => p.id === item.productId);
-        const fixedPrice = currentProduct?.price ?? item.price;
-        return {
-          ...item,
-          price: fixedPrice
-        };
-      });
-
-      const newOrderData = {
-        clientId: order.clientId,
-        comment: `Копія замовлення ${orderId}. ${order.comment || ''}`,
-        date: new Date().toISOString(),
-        deliveryDate: order.deliveryDate || order.delivery || '',
-        delivery: order.deliveryDate || order.delivery || '',
-        managerId: order.managerId || order.manager || '',
-        manager: order.managerId || order.manager || '',
-        status: 'В обробці' as const,
-        totalAmount: priceSnapshotItems.reduce((acc, item) => acc + (item.qty * item.price), 0),
-        isDeleted: false
-      };
-
-      const orderRef = doc(collection(db, 'orders'));
-      await runTransaction(db, async (transaction) => {
-        transaction.set(orderRef, newOrderData);
-        const plannedReserveByProduct: Record<string, number> = {};
-
-        for (const item of priceSnapshotItems) {
-          const stock = await calculateFreeStockInTransaction(db, transaction, item.productId);
-          const alreadyPlanned = plannedReserveByProduct[item.productId] || 0;
-          const availableNow = stock.free - alreadyPlanned;
-
-          if (item.qty > availableNow) {
-            throw new Error(`Недостатньо вільного залишку для копіювання товару ${item.productId}. Вільно: ${availableNow}, потрібно: ${item.qty}`);
-          }
-
-          const newDocRef = doc(collection(db, 'orderItems'));
-          transaction.set(newDocRef, {
-            orderId: orderRef.id,
+      const items = orderItems.filter(oi => oi.orderId === orderId && !oi.isDeleted);
+      const newItems = items
+        .map(item => {
+          const p = products.find(prod => prod.id === item.productId);
+          if (!p || p.isArchived) return null;
+          return {
             productId: item.productId,
             qty: item.qty,
-            defect: 0,
-            price: item.price,
-            total: item.qty * item.price,
-            isDeleted: false
-          });
+            price: p.price,
+            defect: 0
+          };
+        })
+        .filter((item): item is NonNullable<typeof item> => item !== null);
 
-          plannedReserveByProduct[item.productId] = alreadyPlanned + item.qty;
-        }
-      });
+      if (newItems.length === 0) {
+        alert('Неможливо скопіювати замовлення: немає активних товарів.');
+        setIsSubmitting(false);
+        return;
+      }
 
-      logAction('COPY_ORDER', { from: orderId, to: orderRef.id, copiedCount: priceSnapshotItems.length, skippedCount: items.length - priceSnapshotItems.length });
-    } catch (err) { console.error("Copy failed", err); }
-    finally { setIsSubmitting(false); }
+      const newOrderData: Partial<Order> = {
+        clientId: order.clientId,
+        comment: `Копія замовлення ${orderId}. ${order.comment || ''}`,
+        date: new Date().toISOString().split('T')[0],
+        deliveryDate: order.deliveryDate || order.delivery || '',
+        managerId: order.managerId || order.manager || '',
+        status: 'В обробці'
+      };
+
+      await orderService.createOrder(db, newOrderData, newItems, techSpecs, logAction);
+      alert('Замовлення успішно скопійовано');
+    } catch (err: any) {
+      alert(err.message || 'Помилка при копіюванні');
+      handleFirestoreError(err, OperationType.CREATE, 'orders');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleArchive = useCallback(async (item: any, col: 'products' | 'clients') => {
@@ -1089,6 +950,20 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
       logAction('TOGGLE_ARCHIVE', { collection: col, id: item.id, isArchived: !item.isArchived });
     } catch (err) { console.error("Archive failed", err); }
   }, [user]);
+
+  const handleMaintenance = async () => {
+    if (!confirm('Запустити обслуговування бази даних? Це оновить застарілі поля у всіх замовленнях.')) return;
+    setIsMaintenanceRunning(true);
+    try {
+      const count = await migrationService.migrateOrders(db);
+      alert(`Обслуговування завершено. Оновлено замовлень: ${count}`);
+      logAction('MAINTENANCE_MIGRATION', { count });
+    } catch (err: any) {
+      alert(`Помилка: ${err.message}`);
+    } finally {
+      setIsMaintenanceRunning(false);
+    }
+  };
 
   const deleteItem = useCallback(async (id: string) => {
     const col =
@@ -1161,24 +1036,56 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
   }, []);
 
   if (loading || (user && !currentUserData)) return (
-    <div className="min-h-screen flex items-center justify-center bg-background flex-col gap-4">
-      <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-text-muted font-bold animate-pulse">Завантаження системи FEEL UP...</p>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-navy-dark text-white p-6">
+      <div className="relative mb-10">
+        <div className="w-20 h-20 border-2 border-white/5 rounded-[24px] flex items-center justify-center animate-pulse">
+          <img src="/feelup-icon.svg" className="w-10 h-10 opacity-50 grayscale" alt="" />
+        </div>
+        <div className="absolute inset-0 border-t-2 border-violet-electric rounded-[24px] animate-spin"></div>
+      </div>
+      <div className="text-center">
+        <h2 className="text-2xl font-black tracking-tighter sidebar-logo mb-2">FEEL UP Studio</h2>
+        <p className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] animate-pulse">Завантаження ядра системи...</p>
+      </div>
     </div>
   );
 
   if (!user) return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full bg-card border border-border p-12 rounded-[40px] shadow-2xl text-center">
-        <div className="w-20 h-20 flex items-center justify-center mx-auto mb-8">
-          <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="Logo" />
+    <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-6 relative overflow-hidden">
+      {/* Background Orbs */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-violet-electric/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full translate-y-1/3 -translate-x-1/4" />
+
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="max-w-md w-full relative z-10"
+      >
+        <div className="bg-white p-12 lg:p-16 rounded-[48px] shadow-[0_20px_50px_-12px_rgba(31,30,46,0.1)] border border-white text-center">
+          <div className="w-24 h-24 bg-navy-dark rounded-[32px] flex items-center justify-center mx-auto mb-10 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-500">
+            <img src="/feelup-icon.svg" className="w-12 h-12 object-contain" alt="Logo" />
+          </div>
+          
+          <div className="mb-12">
+            <h1 className="text-5xl font-black mb-3 text-navy-dark tracking-tighter">FEEL UP</h1>
+            <p className="text-slate-400 text-xs font-black tracking-[0.3em] uppercase">студія аеродизайну</p>
+          </div>
+          
+          <button 
+            onClick={handleLogin} 
+            className="w-full flex items-center justify-center gap-4 bg-navy-dark text-white rounded-2xl py-5 font-bold text-lg hover:bg-slate-800 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-navy-dark/20 group"
+          >
+            <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-violet-electric transition-colors">
+              <LogIn className="w-4 h-4" />
+            </div>
+            <span>Увійти через Google</span>
+          </button>
+          
+          <p className="mt-10 text-[10px] text-slate-400 font-medium leading-relaxed">
+            Авторизуючись, ви погоджуєтесь з правилами <br/> доступу до корпоративної системи керування.
+          </p>
         </div>
-        <h1 className="text-4xl font-head font-black mb-1 text-text-main tracking-tighter" style={{ color: '#70489d' }}>FEEL UP</h1>
-        <p className="text-text-muted mb-10 text-sm uppercase tracking-widest font-medium">студія аеродизайну</p>
-        
-        <button onClick={handleLogin} className="w-full flex items-center justify-center gap-4 btn-primary text-lg py-5">
-          <LogIn className="w-6 h-6" /> Увійти через Google
-        </button>
       </motion.div>
     </div>
   );
@@ -1187,19 +1094,26 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
   const isAuthorized = user && user.email && ALLOWED_EMAILS.includes(user.email);
   if (!isAuthorized) return (
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-md w-full bg-card border border-rose-200 p-12 rounded-[40px] shadow-2xl text-center">
-        <div className="w-20 h-20 bg-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-8">
-          <ShieldCheck className="w-10 h-10" />
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }} 
+        animate={{ opacity: 1, scale: 1 }} 
+        className="max-w-md w-full bg-white border border-rose-100 p-12 rounded-[48px] shadow-2xl text-center"
+      >
+        <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-[32px] flex items-center justify-center mx-auto mb-10">
+          <ShieldCheck className="w-12 h-12" />
         </div>
-        <h1 className="text-3xl font-black mb-4 text-text-main">Доступ заборонено</h1>
-        <p className="text-text-muted mb-8 text-base">
-          На жаль, ваша електронна адреса <span className="font-bold text-text-main">{user.email}</span> не має прав доступу до системи FEEL UP.
+        <h1 className="text-3xl font-black mb-6 text-navy-dark tracking-tight">Доступ обмежено</h1>
+        <p className="text-slate-500 mb-10 text-base leading-relaxed">
+          Адреса <span className="font-bold text-navy-dark underline decoration-rose-500/30 decoration-4">{user.email}</span> не має дозволу на вхід.
         </p>
-        <div className="flex flex-col gap-3">
-          <button onClick={() => signOut(auth)} className="w-full btn-primary bg-slate-800 hover:bg-slate-900 py-4 font-bold">
+        <div className="space-y-4">
+          <button 
+            onClick={() => signOut(auth)} 
+            className="w-full py-5 bg-navy-dark text-white rounded-2xl font-bold text-lg hover:bg-slate-800 transition-all shadow-lg shadow-navy-dark/10"
+          >
             Вийти з акаунта
           </button>
-          <p className="text-xs text-text-muted">Зверніться до адміністратора для отримання доступу</p>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Зверніться до адміністратора</p>
         </div>
       </motion.div>
     </div>
@@ -1310,40 +1224,39 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
               </div>
 
               <div className="hidden lg:block">
-                <h2 className="text-xl lg:text-2xl font-bold text-text-main mb-0.5">
-                  {activeTab === 'dashboard' ? 'FEEL UP - студія аеродизайну' : 
-                   activeTab === 'products' ? 'Управління складом' : 
-                   activeTab === 'sales' ? 'Журнал продажів' : 
-                   activeTab === 'clients' ? 'База клієнтів' : 
+                <p className="text-caption mb-1">Вітаємо знову, {user.displayName?.split(' ')[0]} 👋</p>
+                <h2 className="heading-hero">
+                  {activeTab === 'dashboard' ? 'FEEL UP Studio' : 
+                   activeTab === 'products' ? 'Склад' : 
+                   activeTab === 'sales' ? 'Продажі' : 
+                   activeTab === 'clients' ? 'Клієнти' : 
                    activeTab === 'purchases' ? 'Закупівлі' : 
-                   activeTab === 'expenses' ? 'Фінансові витрати' :
-                   activeTab === 'info' ? 'Про програму' : 'Технічні норми'}
+                   activeTab === 'expenses' ? 'Витрати' :
+                   activeTab === 'info' ? 'Інфо' : 'Норми'}
                 </h2>
-                <p className="text-slate-500 text-sm lg:text-base">
-                  {activeTab === 'dashboard' ? '' : (activeTab === 'info' ? 'Як працює ваш FEEL UP' : 'Ось що відбувається сьогодні')}
-                </p>
               </div>
             </div>
 
-            <div className="hidden lg:flex items-center gap-3">
-              <div className="relative flex-1 md:flex-none">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+            <div className="hidden lg:flex items-center gap-4">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input 
                   type="text" 
-                  placeholder="Швидкий пошук..." 
+                  placeholder="Пошук..." 
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2.5 bg-card border border-border rounded-xl w-full md:w-64 focus:ring-2 focus:ring-primary/10 outline-none transition-all text-sm text-text-main"
+                  className="pl-11 pr-5 py-3 bg-white border border-slate-200 rounded-2xl w-72 focus:ring-4 focus:ring-violet-electric/10 focus:border-violet-electric outline-none transition-all text-sm font-medium shadow-sm"
                 />
               </div>
+              
               <div className="relative">
                 <button 
                   onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                  className={`p-3 bg-card border rounded-xl transition-all relative shrink-0 ${isNotificationsOpen ? 'border-primary text-primary ring-2 ring-primary/10' : 'border-border text-text-muted hover:text-primary hover:border-primary'}`}
+                  className={`p-3.5 bg-white border rounded-2xl transition-all relative shrink-0 shadow-sm ${isNotificationsOpen ? 'border-violet-electric ring-4 ring-violet-electric/10' : 'border-slate-200 text-slate-400 hover:text-violet-electric hover:border-violet-electric'}`}
                 >
                   <Bell className="w-5 h-5" />
                   {stockAlerts.length > 0 && (
-                    <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
+                    <span className="absolute top-3.5 right-3.5 w-2.5 h-2.5 bg-red-500 border-2 border-white rounded-full"></span>
                   )}
                 </button>
 
@@ -1450,16 +1363,21 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     <HeliumTankCard balance={dashboardStats.heliumBalance} onCalibrate={() => setIsHeliumModalOpen(true)} />
                   </div>
                   
+                  <CalendarCard token={googleAccessToken} onLogin={handleLogin} />
+                  
                   <StockAlerts alerts={stockAlerts} inventory={inventory} />
+                </div>
+              </div>
 
-                  <div className="hidden lg:block h-full">
-                    <RecentOrders 
+              {/* Bottom Section for Dashboard */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="lg:col-span-12">
+                   <RecentOrders 
                       orders={orders} 
                       clients={clients} 
                       orderTotals={orderTotals} 
                       onViewAll={() => setActiveTab('sales')} 
                     />
-                  </div>
                 </div>
               </div>
             </div>
@@ -1495,6 +1413,13 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                     </button>
                     <button onClick={() => exportToCSV('inventory')} className="btn-primary bg-amber-600 hover:bg-amber-700 flex items-center justify-center gap-2 py-2 px-3 text-[10px] font-bold shadow-none whitespace-nowrap">
                       <Download className="w-3 h-3" /> Склад .CSV
+                    </button>
+                    <button 
+                      onClick={handleMaintenance} 
+                      disabled={isMaintenanceRunning}
+                      className="btn-primary bg-rose-600 hover:bg-rose-700 flex items-center justify-center gap-2 py-2 px-3 text-[10px] font-bold shadow-none whitespace-nowrap disabled:opacity-50"
+                    >
+                      <Settings className="w-3 h-3" /> {isMaintenanceRunning ? 'Оновлення...' : 'Обслуговування'}
                     </button>
                   </div>
                 ) : (
@@ -1595,6 +1520,10 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
                 />
               )}
             </div>
+          )}
+
+          {activeTab === 'audit' && (
+            <AuditLogTab db={db} />
           )}
 
           <AnimatePresence>
@@ -1705,6 +1634,8 @@ const ai = new GoogleGenAI({ apiKey: GEMINI_KEY });
               products={products} 
               orderItems={orderItems} 
               selectedOrderId={selectedOrderId} 
+              productSearch={productSearch}
+              setProductSearch={setProductSearch}
             />
             <button type="submit" disabled={isSubmitting} className="w-full btn-primary text-xl py-5 disabled:opacity-50">
               {isSubmitting ? 'Збереження...' : 'Додати'}

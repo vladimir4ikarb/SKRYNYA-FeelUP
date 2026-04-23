@@ -1,6 +1,6 @@
 # Архітектура та Модель Даних (Core Architecture) — Актуальна версія
 
-Цей документ фіксує цільову модель даних FeelUP після виконаного вирівнювання.
+Цей документ фіксує цільову модель даних FEEL UP після виконаного вирівнювання.
 
 ## 1. Фундаментальні принципи
 
@@ -20,7 +20,13 @@
 4. **Immutable Audit Log**
 - `logs`: create-only, без update/delete.
 
-5. **Role-based Security Rules**
+5. **Service Layer (Enforcement)**
+- Уся критична бізнес-логіка (склад, транзакції) винесена в сервіси: `orderService.ts`, `purchaseService.ts`, `inventoryService.ts`.
+
+6. **Unified Math**
+- Усі алгоритми розрахунку залишків та гелію централізовані в `inventoryMath.ts`.
+
+7. **Role-based Security Rules**
 - доступ розділений за ролями `admin/manager/viewer`;
 - глобальні permissive write-правила відсутні.
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Zap } from 'lucide-react';
+import { Zap, Settings2 } from 'lucide-react';
 
 interface HeliumTankCardProps {
   balance: number;
@@ -8,40 +8,50 @@ interface HeliumTankCardProps {
   onCalibrate: () => void;
 }
 
-export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate }: HeliumTankCardProps) => (
-  <div className="saas-card p-3 lg:p-4 cursor-pointer hover:border-primary transition-all group flex flex-col justify-center" onClick={onCalibrate}>
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-3">
-        <div className="p-2 bg-cyan-50 rounded-xl text-cyan-600 shrink-0">
-          <Zap className="w-4 h-4" />
-        </div>
-        <div>
-          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">Балон 40л</p>
-          <p className={`text-base lg:text-lg font-black leading-none ${balance < 1 ? 'text-rose-500' : 'text-slate-900'}`}>
-            {balance.toFixed(1)} <span className="text-[10px] font-normal text-slate-400 tracking-normal">м³</span>
-          </p>
-        </div>
-      </div>
-      
-      <div className="flex-1 flex flex-col items-end justify-center">
-        <div className="relative w-full h-8 flex items-center">
-          <div className="relative w-full h-7 flex items-center">
-            <div className="relative flex-1 h-full bg-slate-100 rounded-full border border-slate-200 overflow-hidden shadow-inner z-10">
-              <motion.div 
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(100, (balance / capacity) * 100)}%` }}
-                transition={{ duration: 1.5, ease: "easeOut" }}
-                className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-600 to-cyan-400"
-              />
-            </div>
-            <div className="flex flex-col justify-center -ml-[1px] z-0">
-              <div className="w-1.5 h-4 bg-slate-300 border-y border-r border-slate-400 rounded-r-sm"></div>
-              <div className="w-1 h-2 -ml-[6px] absolute right-[-8px] bg-slate-400 rounded-r-sm border border-slate-500 shadow-sm"></div>
-            </div>
+export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate }: HeliumTankCardProps) => {
+  const percentage = Math.min(100, Math.max(0, (balance / capacity) * 100));
+  const isLow = balance < 1.0;
+
+  return (
+    <div 
+      className="saas-card p-6 cursor-pointer group flex flex-col h-full min-h-[180px] justify-between relative overflow-hidden" 
+      onClick={onCalibrate}
+    >
+      {/* Background Decorative Element */}
+      <div className={`absolute -right-4 -top-4 w-24 h-24 blur-3xl rounded-full opacity-20 transition-colors duration-500 ${isLow ? 'bg-rose-500' : 'bg-cyan-500'}`} />
+
+      <div className="flex items-center justify-between mb-6 relative z-10">
+        <div className="flex items-center gap-3">
+          <div className={`p-2 rounded-xl transition-colors ${isLow ? 'bg-rose-500/10 text-rose-500' : 'bg-cyan-500/10 text-cyan-500'}`}>
+            <Zap className="w-5 h-5" />
           </div>
+          <h3 className="text-caption">Гелій (40л)</h3>
         </div>
-        <p className="text-[9px] text-slate-400 font-bold whitespace-nowrap mt-1">{((balance / capacity) * 100).toFixed(0)}% залишок</p>
+        <Settings2 className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
+      </div>
+
+      <div className="relative z-10">
+        <div className="flex items-end justify-between mb-4">
+          <div>
+            <span className={`text-3xl font-black tracking-tighter ${isLow ? 'text-rose-500' : 'text-text-main'}`}>
+              {balance.toFixed(2)}
+            </span>
+            <span className="text-xs font-bold text-slate-400 ml-1.5 uppercase">м³</span>
+          </div>
+          <span className={`text-xs font-black ${isLow ? 'text-rose-500' : 'text-cyan-600'}`}>
+            {percentage.toFixed(0)}%
+          </span>
+        </div>
+
+        <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${percentage}%` }}
+            transition={{ duration: 1.5, ease: "circOut" }}
+            className={`absolute inset-y-0 left-0 ${isLow ? 'bg-rose-500' : 'bg-gradient-to-r from-cyan-600 to-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.5)]'}`}
+          />
+        </div>
       </div>
     </div>
-  </div>
-));
+  );
+});

@@ -103,7 +103,7 @@ service cloud.firestore {
 
     function isValidOrder(data) {
       return hasRequiredFields(['clientId', 'date', 'status']) &&
-             data.status in ['В обробці', 'Виконано', 'Скасовано'] &&
+             data.status in ['Чернетка', 'В обробці', 'Виконано', 'Скасовано'] &&
              data.clientId is string &&
              data.date is string &&
              (!('delivery' in data) || (data.delivery is string && data.delivery.size() < 1000)) &&
@@ -126,7 +126,7 @@ service cloud.firestore {
     function isValidPurchase(data) {
       return hasRequiredFields(['date', 'supplier', 'status']) &&
              data.supplier is string && data.supplier.size() > 0 && data.supplier.size() < 500 &&
-             data.status in ['Оплачено', 'Чернетка'] &&
+             data.status in ['Чернетка', 'Обробляється', 'Оплачено', 'Борг', 'Скасовано'] &&
              data.date is string &&
              (!('deliveryCost' in data) || (data.deliveryCost is number)) &&
              (!('isDeleted' in data) || data.isDeleted is bool);
