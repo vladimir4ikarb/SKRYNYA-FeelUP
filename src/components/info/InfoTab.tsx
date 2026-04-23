@@ -24,7 +24,7 @@ export const InfoTab = () => (
           <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
             <BookOpen className="w-6 h-6" />
           </div>
-          <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">Feel UP: Технічний гід</h2>
+          <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">FEEL UP: Технічний гід</h2>
         </div>
         <p className="text-slate-600 text-lg lg:text-xl max-w-3xl leading-relaxed">
           Система побудована як єдиний технічний механізм для автоматизації студії аеродизайну. 

@@ -48,11 +48,11 @@ export const Sidebar = ({
       <div className="flex items-center justify-between mb-4 lg:mb-8 px-2 lg:block">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 lg:w-10 lg:h-10 flex-shrink-0">
-            <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="Feel UP" />
+            <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="FEEL UP" />
           </div>
           <div className="flex flex-col justify-center">
             <h1 className="text-lg lg:text-2xl font-head font-black tracking-tighter leading-none" style={{ color: '#70489d' }}>
-              Feel UP
+              FEEL UP
             </h1>
             <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-0.5 lg:mt-1 leading-none whitespace-nowrap" style={{ color: '#7c8b98' }}>
               СТУДІЯ АЕРОДИЗАЙНУ
