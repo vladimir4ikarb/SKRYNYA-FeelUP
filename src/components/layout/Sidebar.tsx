@@ -51,7 +51,7 @@ export const Sidebar = ({
             <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="FEEL UP" />
           </div>
           <div className="flex flex-col justify-center">
-            <h1 className="text-lg lg:text-2xl font-head font-semibold tracking-tight leading-none text-primary">
+            <h1 className="text-lg lg:text-2xl font-head font-semibold tracking-tight leading-none text-white">
               FEEL UP
             </h1>
             <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-0.5 lg:mt-1 leading-none whitespace-nowrap text-text-muted">
