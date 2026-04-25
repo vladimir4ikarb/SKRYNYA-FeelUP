@@ -50,7 +50,7 @@ export const SalesTab = React.memo(({
   }, [orderItems]);
 
   return (
-    <div className="saas-card overflow-hidden">
+    <div className="card-base card-orders overflow-hidden">
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left">
@@ -73,7 +73,7 @@ export const SalesTab = React.memo(({
                 if (!product?.size) return acc;
                 const spec = sMap.get(product.size);
                 const volume = spec?.heliumVolume || 0;
-                return acc + (volume * (oi.qty + (oi.defect || 0)));
+                return acc + (volume * oi.qty);
               }, 0);
               
               return (

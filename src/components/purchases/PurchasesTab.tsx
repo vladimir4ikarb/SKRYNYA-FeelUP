@@ -28,7 +28,7 @@ export const PurchasesTab = React.memo(({
   );
 
   return (
-    <div className="saas-card overflow-hidden">
+    <div className="card-base card-orders overflow-hidden">
       <table className="w-full text-left">
         <thead className="bg-card border-b border-border">
           <tr>
@@ -44,9 +44,13 @@ export const PurchasesTab = React.memo(({
             <tr key={p.id} className={`hover:bg-card/50 transition-colors cursor-pointer ${selectedPurchaseId === p.id ? 'bg-indigo-50/50' : ''}`} onClick={() => onSelectPurchase(selectedPurchaseId === p.id ? null : p.id)}>
               <td className="px-8 py-5 text-text-muted font-medium">{new Date(p.date).toLocaleDateString()}</td>
               <td className="px-8 py-5 font-bold text-text-main">{p.supplierName || p.supplier}</td>
-              <td className="px-8 py-5 font-bold text-text-main">{purchaseTotals[p.id] || 0} ₴</td>
+              <td className="px-8 py-5 font-bold text-text-main">{p.totalAmount || purchaseTotals[p.id] || 0} ₴</td>
               <td className="px-8 py-5">
-                <span className={`badge ${p.status === 'Оплачено' ? 'badge-success' : 'badge-warning'}`}>
+                <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                  p.status === 'Проведено' ? 'bg-emerald-500/10 text-emerald-500' : 
+                  p.status === 'Скасовано' ? 'bg-rose-500/10 text-rose-500' : 
+                  'bg-amber-500/10 text-amber-500'
+                }`}>
                   {p.status}
                 </span>
               </td>

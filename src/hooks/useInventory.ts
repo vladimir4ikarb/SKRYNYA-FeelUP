@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Product, PurchaseItem, Purchase, OrderItem, Order } from '../types';
+import { Product, PurchaseItem, Purchase, OrderItem, Order, WriteOff, WriteOffItem } from '../types';
 import { calculateInventorySnapshot, InventorySnapshot } from '../services/inventoryMath';
 
 export function useInventory(
@@ -7,10 +7,12 @@ export function useInventory(
   purchaseItems: PurchaseItem[],
   purchases: Purchase[],
   orderItems: OrderItem[],
-  orders: Order[]
+  orders: Order[],
+  writeOffItems: WriteOffItem[] = [],
+  writeOffs: WriteOff[] = []
 ): InventorySnapshot {
   return useMemo(
-    () => calculateInventorySnapshot(products, purchaseItems, purchases, orderItems, orders),
-    [products, purchaseItems, purchases, orderItems, orders]
+    () => calculateInventorySnapshot(products, purchaseItems, purchases, orderItems, orders, writeOffItems, writeOffs),
+    [products, purchaseItems, purchases, orderItems, orders, writeOffItems, writeOffs]
   );
 }

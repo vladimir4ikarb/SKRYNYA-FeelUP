@@ -18,7 +18,7 @@ export const ClientsTab = React.memo(({ clients, searchTerm, onToggleArchive, on
   }), [clients, searchTerm]);
 
   return (
-    <div className="saas-card overflow-hidden">
+    <div className="card-base card-orders overflow-hidden">
       {/* Desktop Table */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left">

@@ -36,7 +36,7 @@ const CheckCircle2 = ({ className }: { className?: string }) => (
 export const InfoTab = () => (
   <div className="space-y-12 max-w-6xl pb-20">
     {/* Header Section */}
-    <div className="saas-card p-6 lg:p-10 border-none shadow-none bg-card rounded-[32px]">
+    <div className="card-base p-6 lg:p-10 border-none shadow-none bg-card rounded-[32px]">
       <div className="flex items-center gap-5 mb-6">
         <div className="w-14 h-14 bg-card rounded-2xl flex items-center justify-center text-primary shadow-sm border border-border shrink-0">
           <BookOpen className="w-7 h-7" />
@@ -71,7 +71,7 @@ export const InfoTab = () => (
           desc: 'Система блокує видалення товарів, клієнтів або замовлень, якщо це може призвести до помилок у фінансовій звітності.'
         }
       ].map((item, i) => (
-        <div key={i} className="saas-card p-8">
+        <div key={i} className="card-base p-8">
           <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
             <item.icon className="w-6 h-6" />
           </div>
@@ -84,7 +84,7 @@ export const InfoTab = () => (
     {/* Section: Алгоритми */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Остатки */}
-      <div className="saas-card p-8">
+      <div className="card-base p-8">
         <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
           <Activity className="w-6 h-6" />
         </div>
@@ -96,7 +96,7 @@ export const InfoTab = () => (
           </div>
           <div>
             <p className="text-base font-bold text-text-main mb-1">Резервування</p>
-            <p className="text-sm text-text-muted">Товари стають недоступними для нових продажів одразу після додавання у замовлення зі статусом "В обробці".</p>
+            <p className="text-sm text-text-muted">У цій версії системи резервування товарів відсутнє. Товар списується тільки при фінальному статусі "Виконано".</p>
           </div>
           <div>
             <p className="text-base font-bold text-text-main mb-1">Архівна логіка</p>
@@ -106,7 +106,7 @@ export const InfoTab = () => (
       </div>
 
       {/* Гелий */}
-      <div className="saas-card p-8">
+      <div className="card-base p-8">
         <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
           <Wind className="w-6 h-6" />
         </div>
@@ -135,7 +135,7 @@ export const InfoTab = () => (
         { icon: Lock, title: 'Захист документів', desc: 'Виконані замовлення та оплачені закупівлі стають недоступними для випадкових змін.' },
         { icon: Users, title: 'Аудит лог', desc: 'Система фіксує кожну суттєву дію: хто, коли і яку операцію виконав у системі FEEL UP.' }
       ].map((item, i) => (
-        <div key={i} className="saas-card p-8">
+        <div key={i} className="card-base p-8">
           <div className="w-12 h-12 bg-card text-text-muted rounded-xl flex items-center justify-center mb-6">
             <item.icon className="w-6 h-6" />
           </div>
@@ -146,14 +146,14 @@ export const InfoTab = () => (
     </div>
 
     {/* Section: Життєвий цикл */}
-    <div className="saas-card p-10 lg:p-16">
+    <div className="card-base p-10 lg:p-16">
       <h3 className="text-2xl font-black text-text-main mb-12 text-center uppercase tracking-tight">Життєвий цикл замовлення</h3>
       
       <div className="relative flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-6">
         <div className="flex flex-col items-center text-center max-w-[220px] relative z-10">
           <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-text-muted">01</div>
-          <p className="font-bold text-text-main text-lg mb-2">В обробці</p>
-          <p className="text-sm text-text-muted">Товар резервується на складі, але фактичне списання ще не відбулося.</p>
+          <p className="font-bold text-text-main text-lg mb-2">Чернетка</p>
+          <p className="text-sm text-text-muted">Замовлення створено, але ще не впливає на залишки складу.</p>
         </div>
 
         <ArrowRight className="hidden lg:block w-8 h-8 text-border" />
@@ -170,8 +170,8 @@ export const InfoTab = () => (
 
         <div className="flex flex-col items-center text-center max-w-[220px] relative z-10">
           <div className="w-12 h-12 bg-card border border-border rounded-full flex items-center justify-center mb-6 shadow-sm font-black text-text-muted">03</div>
-          <p className="font-bold text-text-muted text-lg mb-2">Архівація</p>
-          <p className="text-sm text-text-muted">Замовлення зберігається в історії для аналітики без можливості подальших змін.</p>
+          <p className="font-bold text-text-muted text-lg mb-2">Скасовано</p>
+          <p className="text-sm text-text-muted">Замовлення скасовано. Товари не резервуються і не впливають на фактичний залишок.</p>
         </div>
 
         <div className="absolute top-6 left-1/4 right-1/4 h-px bg-card hidden lg:block"></div>

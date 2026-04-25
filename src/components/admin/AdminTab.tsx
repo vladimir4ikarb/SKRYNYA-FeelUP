@@ -8,6 +8,7 @@ interface AdminTabProps {
   onClearOldLogs: () => void;
   onClearWarehouse: () => void;
   onTriggerBackup: () => void;
+  onNormalizeCategories: () => void;
   backups: any[];
   trashItems: any[];
   onRestoreItem: (id: string, col: string) => void;
@@ -22,6 +23,7 @@ export const AdminTab = ({
   onClearOldLogs,
   onClearWarehouse,
   onTriggerBackup,
+  onNormalizeCategories,
   backups,
   trashItems,
   onRestoreItem,
@@ -31,7 +33,7 @@ export const AdminTab = ({
 }: AdminTabProps) => {
   return (
     <div className="space-y-8">
-      <div className="saas-card overflow-x-auto">
+      <div className="card-base card-orders overflow-x-auto">
         <table className="w-full text-left min-w-[600px]">
           <thead className="bg-card border-b border-border">
             <tr>
@@ -67,7 +69,14 @@ export const AdminTab = ({
           <h3 className="text-lg lg:text-xl font-bold text-text-main flex items-center gap-2">
             <Trash2 className="w-5 h-5 lg:w-6 lg:h-6 text-text-muted" /> Небезпечна зона
           </h3>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 text-right">
+            <button 
+              onClick={onNormalizeCategories} 
+              disabled={isSubmitting}
+              className="text-[10px] lg:text-xs font-bold text-primary hover:text-primary/80 flex items-center gap-2 transition-colors disabled:opacity-50 border border-primary/20 p-2 rounded-xl bg-primary/5 sm:border-none sm:p-0 sm:bg-transparent"
+            >
+              <RefreshCw className="w-3 h-3 lg:w-4 lg:h-4" /> Навести лад у категоріях
+            </button>
             <button 
               onClick={onClearOldLogs} 
               disabled={isSubmitting}

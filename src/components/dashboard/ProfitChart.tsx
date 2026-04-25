@@ -14,7 +14,7 @@ interface ProfitChartProps {
 }
 
 export const ProfitChart = React.memo(({ data }: ProfitChartProps) => (
-  <div className="saas-card hover-depth p-6 h-[380px] flex flex-col">
+  <div className="card-base card-chart p-6 h-[380px] flex flex-col">
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-text-main">Приріст прибутку</h3>
       <p className="text-text-muted text-xs">За останній тиждень</p>

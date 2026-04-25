@@ -9,7 +9,7 @@ interface SpecsTabProps {
 }
 
 export const SpecsTab = React.memo(({ specs, onEdit, onDelete }: SpecsTabProps) => (
-  <div className="saas-card overflow-hidden">
+  <div className="card-base card-orders overflow-hidden">
     <table className="w-full text-left">
       <thead className="bg-card border-b border-border">
         <tr>

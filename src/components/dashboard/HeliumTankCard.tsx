@@ -9,10 +9,10 @@ interface HeliumTankCardProps {
 }
 
 export const HeliumTankCard = React.memo(({ balance, capacity = 6.0, onCalibrate }: HeliumTankCardProps) => (
-  <div className="saas-card hover-depth p-3 lg:p-4 cursor-pointer transition-all group flex flex-col justify-center" onClick={onCalibrate}>
+  <div className="card-base card-helium p-3 lg:p-4 cursor-pointer group flex flex-col justify-center" onClick={onCalibrate}>
     <div className="flex items-center justify-between gap-4">
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-cyan-50 rounded-xl text-cyan-600 shrink-0">
+        <div className="p-2 bg-cyan-500/10 rounded-xl text-cyan-600 shrink-0">
           <Zap className="w-4 h-4" />
         </div>
 

@@ -34,7 +34,7 @@ export const CalendarCard = ({ token, onLogin }: CalendarCardProps) => {
 
   if (!token) {
     return (
-      <div className="saas-card p-8 flex flex-col items-center justify-center text-center space-y-4 min-h-[280px]">
+      <div className="card-base p-8 flex flex-col items-center justify-center text-center space-y-4 min-h-[280px]">
         <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-300">
           <CalendarIcon className="w-8 h-8" />
         </div>
@@ -54,7 +54,7 @@ export const CalendarCard = ({ token, onLogin }: CalendarCardProps) => {
   }
 
   return (
-    <div className="saas-card p-8 h-full flex flex-col min-h-[350px]">
+    <div className="card-base p-8 h-full flex flex-col min-h-[350px]">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-violet-soft rounded-2xl flex items-center justify-center text-violet-electric">

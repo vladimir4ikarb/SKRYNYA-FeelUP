@@ -9,7 +9,7 @@ interface RecentOrdersProps {
 }
 
 export const RecentOrders = React.memo(({ orders, clients, orderTotals, onViewAll }: RecentOrdersProps) => (
-  <div className="saas-card hover-depth overflow-hidden h-auto lg:h-[380px] flex flex-col">
+  <div className="card-base card-orders overflow-hidden h-auto lg:h-[380px] flex flex-col">
     <div className="p-4 lg:p-5 border-b border-border flex items-center justify-between bg-card/50">
       <h3 className="text-base lg:text-lg font-semibold text-text-main">Останні замовлення</h3>
       <button onClick={onViewAll} className="text-primary font-semibold hover:underline text-xs bg-primary/10 px-3 py-1 rounded-lg transition-all">

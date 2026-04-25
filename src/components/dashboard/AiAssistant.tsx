@@ -198,7 +198,7 @@ export const AiAssistant = React.memo(({ chatHistory, isLoading, onSendMessage, 
   }
 
   return (
-    <div className="saas-card overflow-hidden flex flex-col h-[420px]">
+    <div className="card-base card-orders overflow-hidden flex flex-col h-[420px]">
       {renderContent()}
     </div>
   );

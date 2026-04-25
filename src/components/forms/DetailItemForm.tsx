@@ -15,9 +15,9 @@ export const DetailItemForm = ({
   selectedOrderId
 }: DetailItemFormProps) => {
   return (
-    <div className="grid grid-cols-2 gap-8">
+    <div className="grid grid-cols-2 gap-4 lg:gap-8">
       <div className="col-span-2">
-        <label className="text-sm font-bold text-slate-500 block mb-3">Товар</label>
+        <label className="text-sm font-bold text-slate-500 block mb-1.5 lg:mb-3">Товар</label>
         <select name="productId" required className="input-field">
           <option value="">Оберіть товар</option>
           {products.filter(p => !p.isArchived || (itemModalType === 'order' && orderItems.some(oi => oi.productId === p.id && oi.orderId === selectedOrderId))).map(p => (
@@ -26,19 +26,13 @@ export const DetailItemForm = ({
         </select>
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Кількість</label>
+        <label className="text-sm font-bold text-slate-500 block mb-1.5 lg:mb-3">Кількість</label>
         <input name="qty" type="number" required min={1} className="input-field" />
       </div>
       <div>
-        <label className="text-sm font-bold text-slate-500 block mb-3">Ціна (фіксується)</label>
+        <label className="text-sm font-bold text-slate-500 block mb-1.5 lg:mb-3">Ціна (фіксується)</label>
         <input name="price" type="number" required min={0} className="input-field" />
       </div>
-      {itemModalType === 'order' && (
-        <div>
-          <label className="text-sm font-bold text-slate-500 block mb-3">Брак</label>
-          <input name="defect" type="number" defaultValue={0} min={0} className="input-field" />
-        </div>
-      )}
     </div>
   );
 };

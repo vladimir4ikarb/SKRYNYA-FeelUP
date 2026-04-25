@@ -1,33 +1,29 @@
 import React, { useState, useRef } from 'react';
-import { Plus, X, Search, UserPlus } from 'lucide-react';
-import { Purchase, Product, Supplier } from '../../types';
+import { Plus, X, Search } from 'lucide-react';
+import { WriteOff, Product } from '../../types';
 
-interface PurchaseFormProps {
-  editingItem: Purchase | null;
+interface WriteOffFormProps {
+  editingItem: WriteOff | null;
   products: Product[];
-  suppliers: Supplier[];
-  draftPurchaseItems: { productId: string; qty: number; price: number }[];
-  setDraftPurchaseItems: (items: { productId: string; qty: number; price: number }[]) => void;
+  draftItems: { productId: string; qty: number }[];
+  setDraftItems: (items: { productId: string; qty: number }[]) => void;
   productSearch: string;
   setProductSearch: (s: string) => void;
 }
 
-export const PurchaseForm = ({
+export const WriteOffForm = ({
   editingItem,
   products,
-  suppliers,
-  draftPurchaseItems,
-  setDraftPurchaseItems,
+  draftItems,
+  setDraftItems,
   productSearch,
   setProductSearch
-}: PurchaseFormProps) => {
+}: WriteOffFormProps) => {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
-  const [isAddingSupplier, setIsAddingSupplier] = useState(false);
   const [showProductResults, setShowProductResults] = useState(false);
   const [status, setStatus] = useState(editingItem?.status || 'Чернетка');
 
   const draftQtyRef = useRef<HTMLInputElement>(null);
-  const draftPriceRef = useRef<HTMLInputElement>(null);
 
   const filteredProducts = products.filter(p => 
     !p.isArchived && (
@@ -46,39 +42,18 @@ export const PurchaseForm = ({
           <input name="date" type="datetime-local" defaultValue={editingItem?.date || new Date().toISOString().slice(0, 16)} required className="input-field" />
         </div>
         <div>
-          <div className="flex items-center justify-between mb-1.5 lg:mb-3">
-            <label className="text-xs font-bold text-text-muted block uppercase tracking-wider">Постачальник</label>
-            <button 
-              type="button" 
-              onClick={() => setIsAddingSupplier(!isAddingSupplier)}
-              className="text-[10px] font-black text-primary hover:underline flex items-center gap-1 uppercase"
-            >
-              {isAddingSupplier ? 'До списку' : 'Додати нового'}
-            </button>
-          </div>
-          {isAddingSupplier ? (
-            <div className="relative">
-              <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
-              <input 
-                name="supplierName" 
-                placeholder="Назва нового постачальника" 
-                required 
-                className="input-field pl-10 border-primary/30 bg-primary/5 focus:bg-white transition-all" 
-              />
-            </div>
-          ) : (
-            <select name="supplierName" defaultValue={editingItem?.supplierName || editingItem?.supplier} required className="input-field">
-              <option value="">{suppliers.length > 0 ? 'Оберіть постачальника' : 'Завантаження списку...'}</option>
-              {suppliers.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-              {editingItem?.supplierName && !suppliers.some(s => s.name === editingItem.supplierName) && (
-                <option value={editingItem.supplierName}>{editingItem.supplierName}</option>
-              )}
-            </select>
-          )}
+          <label className="text-xs font-bold text-text-muted block mb-1.5 lg:mb-3 uppercase tracking-wider">Причина</label>
+          <select name="reason" defaultValue={editingItem?.reason || 'Брак'} required className="input-field">
+            <option value="Брак">Брак</option>
+            <option value="Тест/Навчання">Тест/Навчання</option>
+            <option value="Внутрішнє використання">Внутрішнє використання</option>
+            <option value="Корекція">Корекція залишку</option>
+            <option value="Інше">Інше</option>
+          </select>
         </div>
         <div>
-          <label className="text-xs font-bold text-text-muted block mb-1.5 lg:mb-3 uppercase tracking-wider">Доставка нам, ₴</label>
-          <input name="deliveryCost" type="number" step="any" defaultValue={editingItem?.deliveryCost || 0} className="input-field" />
+          <label className="text-xs font-bold text-text-muted block mb-1.5 lg:mb-3 uppercase tracking-wider">Списати гелій, м³</label>
+          <input name="heliumVolume" type="number" step="any" defaultValue={editingItem?.heliumVolume || 0} className="input-field" placeholder="0.000" />
         </div>
         <div>
           <label className="text-xs font-bold text-text-muted block mb-1.5 lg:mb-3 uppercase tracking-wider">Статус</label>
@@ -94,26 +69,28 @@ export const PurchaseForm = ({
             <option value="Скасовано">Скасовано</option>
           </select>
         </div>
+        <div className="col-span-2">
+          <label className="text-xs font-bold text-text-muted block mb-1.5 lg:mb-3 uppercase tracking-wider">Коментар</label>
+          <textarea name="comment" defaultValue={editingItem?.comment || ''} className="input-field h-20 resize-none" placeholder="Додайте деталі списання..." />
+        </div>
       </div>
 
       <div className="col-span-full border-t border-border pt-4 lg:pt-8 mt-4 lg:mt-0">
-        <h4 className="font-bold text-sm lg:text-base text-text-main mb-3 lg:mb-6">Позиції закупівлі</h4>
+        <h4 className="font-bold text-sm lg:text-base text-text-main mb-3 lg:mb-6">Товари до списання</h4>
         
-        {draftPurchaseItems.length > 0 && (
+        {draftItems.length > 0 && (
           <div className="mb-6 bg-card rounded-2xl border border-border shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs lg:text-sm">
                 <thead className="bg-background border-b border-border">
                   <tr>
                     <th className="px-4 py-3 font-bold text-text-muted uppercase tracking-wider">Товар</th>
-                    <th className="px-4 py-3 font-bold text-text-muted text-center uppercase tracking-wider">К-сть</th>
-                    <th className="px-4 py-3 font-bold text-text-muted text-right uppercase tracking-wider">Ціна</th>
-                    <th className="px-4 py-3 font-bold text-text-muted text-right uppercase tracking-wider">Сума</th>
+                    <th className="px-4 py-3 font-bold text-text-muted text-center uppercase tracking-wider">Кількість</th>
                     <th className="px-4 py-3 w-10"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {draftPurchaseItems.map((item, idx) => {
+                  {draftItems.map((item, idx) => {
                     const p = products.find(prod => prod.id === item.productId);
                     return (
                       <tr key={idx} className="hover:bg-primary/5 transition-colors group">
@@ -121,12 +98,10 @@ export const PurchaseForm = ({
                           {p?.name}
                           {p?.sku && <span className="block text-[10px] text-primary/60 font-mono">SKU: {p.sku}</span>}
                         </td>
-                        <td className="px-4 py-3 text-center font-black text-indigo-600">{item.qty}</td>
-                        <td className="px-4 py-3 text-right text-text-muted font-medium">{item.price.toLocaleString()} ₴</td>
-                        <td className="px-4 py-3 text-right font-black text-text-main">{(item.qty * item.price).toLocaleString()} ₴</td>
+                        <td className="px-4 py-3 text-center font-black text-rose-600">{item.qty}</td>
                         <td className="px-4 py-3 text-right">
                           {status === 'Чернетка' && (
-                            <button type="button" onClick={() => setDraftPurchaseItems(draftPurchaseItems.filter((_, i) => i !== idx))} className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors">
+                            <button type="button" onClick={() => setDraftItems(draftItems.filter((_, i) => i !== idx))} className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors">
                               <X className="w-4 h-4" />
                             </button>
                           )}
@@ -135,15 +110,6 @@ export const PurchaseForm = ({
                     );
                   })}
                 </tbody>
-                <tfoot className="bg-primary/5 border-t border-primary/10">
-                  <tr>
-                    <td colSpan={3} className="px-4 py-4 text-right font-bold text-text-muted">Загальна сума позицій:</td>
-                    <td className="px-4 py-4 text-right font-black text-xl text-primary">
-                      {draftPurchaseItems.reduce((acc, curr) => acc + (curr.qty * curr.price), 0).toLocaleString()} ₴
-                    </td>
-                    <td></td>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>
@@ -152,7 +118,7 @@ export const PurchaseForm = ({
         {status === 'Чернетка' && (
           <div className="p-4 lg:p-6 bg-primary/5 rounded-3xl border border-primary/10 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end">
-              <div className="sm:col-span-8 relative">
+              <div className="sm:col-span-9 relative">
                 <label className="text-[10px] font-black text-text-muted uppercase mb-1.5 block tracking-widest">Вибір товару (SKU/Назва)</label>
                 <div className="relative">
                   <input 
@@ -212,15 +178,9 @@ export const PurchaseForm = ({
                 )}
               </div>
               
-              <div className="grid grid-cols-2 gap-4 sm:col-span-4">
-                <div>
-                  <label className="text-[10px] font-black text-text-muted uppercase mb-1.5 block tracking-widest text-center sm:text-left">Кількість</label>
-                  <input ref={draftQtyRef} type="number" step="any" className="input-field h-11 text-center sm:text-left text-base font-black text-indigo-600" placeholder="0" />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black text-text-muted uppercase mb-1.5 block tracking-widest text-center sm:text-left">Ціна за од.</label>
-                  <input ref={draftPriceRef} type="number" step="any" className="input-field h-11 text-center sm:text-left text-base font-black text-rose-600" placeholder="0.00" />
-                </div>
+              <div className="sm:col-span-3">
+                <label className="text-[10px] font-black text-text-muted uppercase mb-1.5 block tracking-widest text-center sm:text-left">Кількість</label>
+                <input ref={draftQtyRef} type="number" step="any" className="input-field h-11 text-center sm:text-left text-base font-black text-rose-600" placeholder="0" />
               </div>
             </div>
             
@@ -229,11 +189,9 @@ export const PurchaseForm = ({
               onClick={() => {
                 const pId = selectedProductId;
                 const qty = Number(draftQtyRef.current?.value || 0);
-                const price = Number(draftPriceRef.current?.value || 0);
                 if (pId && qty > 0) {
-                  setDraftPurchaseItems([...draftPurchaseItems, { productId: pId, qty, price }]);
+                  setDraftItems([...draftItems, { productId: pId, qty }]);
                   if (draftQtyRef.current) draftQtyRef.current.value = '';
-                  if (draftPriceRef.current) draftPriceRef.current.value = '';
                   setSelectedProductId(null);
                   setProductSearch('');
                 } else {
@@ -241,9 +199,9 @@ export const PurchaseForm = ({
                 }
               }}
               disabled={!selectedProductId}
-              className="w-full h-11 bg-primary text-white hover:bg-primary-dark disabled:opacity-50 disabled:grayscale transition-all rounded-2xl font-black text-xs lg:text-sm shadow-lg shadow-primary/25 flex items-center justify-center gap-2 uppercase tracking-widest border-2 border-white/20"
+              className="w-full h-11 bg-rose-500 text-white hover:bg-rose-600 disabled:opacity-50 disabled:grayscale transition-all rounded-2xl font-black text-xs lg:text-sm shadow-lg shadow-rose-500/25 flex items-center justify-center gap-2 uppercase tracking-widest border-2 border-white/20"
             >
-              <Plus className="w-5 h-5" /> Додати товар до закупівлі
+              <Plus className="w-5 h-5" /> Додати товар до списання
             </button>
           </div>
         )}

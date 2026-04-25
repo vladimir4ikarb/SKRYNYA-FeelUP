@@ -6,6 +6,12 @@ export interface Product {
   id: string;
   name: string;
   category: string;
+  subCategory?: string;
+  sku?: string;
+  skuId?: number;
+  foilType?: 'Цифра' | 'Фігура' | 'Персонаж' | 'Напис' | '3D / Обʼємна';
+  foilLabel?: string;
+  producer?: string;
   size: string;
   color: string;
   heliumVolume?: number;
@@ -16,6 +22,8 @@ export interface Product {
   isArchived?: boolean;
   isDeleted?: boolean;
   imageUrl?: string;
+  latexSeries?: string;
+  description?: string;
 }
 
 export interface HeliumTank {
@@ -43,7 +51,7 @@ export interface AppUser {
   id: string;
   email: string;
   displayName: string;
-  role: 'admin' | 'manager' | 'viewer';
+  role: 'admin' | 'manager' | 'viewer' | 'none';
   isActive?: boolean;
 }
 
@@ -51,7 +59,7 @@ export interface Order {
   id: string;
   clientId: string;
   date: string;
-  status: 'Чернетка' | 'В обробці' | 'Виконано' | 'Скасовано';
+  status: 'Чернетка' | 'Виконано' | 'Скасовано';
   deliveryDate?: string;
   delivery?: string; // legacy
   extraCosts?: number; // Додаткові витрати (таксі тощо)
@@ -67,9 +75,18 @@ export interface OrderItem {
   orderId: string;
   productId: string;
   qty: number;
-  defect: number;
   price: number;
   total?: number;
+  isDeleted?: boolean;
+}
+
+export interface Supplier {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  isArchived?: boolean;
   isDeleted?: boolean;
 }
 
@@ -79,7 +96,7 @@ export interface Purchase {
   supplierName?: string;
   supplier?: string; // legacy
   deliveryCost?: number; // Доставка від постачальника
-  status: 'Чернетка' | 'Обробляється' | 'Оплачено' | 'Борг' | 'Скасовано';
+  status: 'Чернетка' | 'Проведено' | 'Скасовано';
   totalAmount?: number;
   isDeleted?: boolean;
 }
@@ -109,4 +126,22 @@ export interface TechnicalSpec {
   id: string;
   size: string;
   heliumVolume: number;
+}
+
+export interface WriteOff {
+  id: string;
+  date: string;
+  reason: 'Брак' | 'Тест/Навчання' | 'Внутрішнє використання' | 'Корекція' | 'Інше';
+  comment?: string;
+  status: 'Чернетка' | 'Проведено' | 'Скасовано';
+  heliumVolume?: number;
+  isDeleted: boolean;
+}
+
+export interface WriteOffItem {
+  id: string;
+  writeOffId: string;
+  productId: string;
+  qty: number;
+  isDeleted: boolean;
 }

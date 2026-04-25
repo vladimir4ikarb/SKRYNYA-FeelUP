@@ -1,5 +1,6 @@
 {
-  "name": "СКРИНЯ - важливе під контролем",
+  "name": "FEEL UP - студія аеродизайну",
   "description": "Глобальна система обліку та управління. Налаштовано для студії аеродизайну FeelUP.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": []
 }

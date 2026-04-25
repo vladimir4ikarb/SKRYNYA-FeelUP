@@ -1,131 +1,91 @@
 {
   "entities": {
     "Product": {
-      "title": "Product",
-      "description": "Inventory item details",
+      "title": "Товар",
+      "description": "Товар на складі",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Product name" },
-        "category": { "type": "string", "description": "Product category" },
-        "size": { "type": "string", "description": "Product size (e.g. 12\", 18\")" },
-        "color": { "type": "string", "description": "Product color" },
-        "price": { "type": "number", "description": "Standard selling price" },
-        "costPrice": { "type": "number", "description": "Average purchase cost" },
-        "currentStock": { "type": "number", "description": "Tracked inventory level" }
+        "name": { "type": "string" },
+        "sku": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "costPrice": { "type": "number" },
+        "isArchived": { "type": "boolean" },
+        "isDeleted": { "type": "boolean" }
       },
       "required": ["name", "price"]
     },
-    "HeliumTank": {
-      "title": "HeliumTank",
-      "description": "Helium cylinder status",
-      "type": "object",
-      "properties": {
-        "name": { "type": "string", "description": "Tank identifier" },
-        "capacityM3": { "type": "number", "description": "Total capacity in cubic meters" },
-        "currentVolumeM3": { "type": "number", "description": "Current helium level" },
-        "lastCalibrationDate": { "type": "string", "format": "date-time", "description": "Last manual check" }
-      },
-      "required": ["name", "capacityM3", "currentVolumeM3"]
-    },
     "Client": {
-      "title": "Client",
-      "description": "Customer contact information",
+      "title": "Клієнт",
+      "description": "Клієнтська база",
       "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Customer name" },
-        "phone": { "type": "string", "description": "Phone number" },
-        "instagram": { "type": "string", "description": "Instagram handle" },
-        "address": { "type": "string", "description": "Delivery address" },
-        "comment": { "type": "string", "description": "Customer notes" }
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "instagram": { "type": "string" },
+        "address": { "type": "string" },
+        "comment": { "type": "string" },
+        "isArchived": { "type": "boolean" },
+        "isDeleted": { "type": "boolean" }
       },
       "required": ["name"]
     },
     "Order": {
-      "title": "Order",
-      "description": "Order header details",
+      "title": "Замовлення",
+      "description": "Замовлення клієнта",
       "type": "object",
       "properties": {
-        "clientId": { "type": "string", "description": "Reference to Client" },
-        "date": { "type": "string", "format": "date-time", "description": "Order date" },
-        "status": { "type": "string", "enum": ["В обробці", "Виконано", "Скасовано"], "description": "Order status" },
-        "delivery": { "type": "string", "description": "Delivery details" },
-        "manager": { "type": "string", "description": "Responsible manager" },
-        "comment": { "type": "string", "description": "Additional notes" },
-        "extraCosts": { "type": "number", "description": "Additional delivery/taxi costs" }
+        "clientId": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Чернетка", "Виконано", "Скасовано"] },
+        "delivery": { "type": "string" },
+        "manager": { "type": "string" },
+        "comment": { "type": "string" },
+        "extraCosts": { "type": "number" },
+        "isDeleted": { "type": "boolean" }
       },
       "required": ["clientId", "date", "status"]
     },
     "OrderItem": {
-      "title": "OrderItem",
-      "description": "Individual items within an order",
+      "title": "Позиція замовлення",
+      "description": "Товар у замовленні",
       "type": "object",
       "properties": {
-        "orderId": { "type": "string", "description": "Reference to Order" },
-        "productId": { "type": "string", "description": "Reference to Product" },
-        "qty": { "type": "number", "description": "Quantity sold" },
-        "defect": { "type": "number", "description": "Defective items" },
-        "price": { "type": "number", "description": "Unit price at time of sale" }
+        "orderId": { "type": "string" },
+        "productId": { "type": "string" },
+        "qty": { "type": "number" },
+        "price": { "type": "number" },
+        "isDeleted": { "type": "boolean" }
       },
       "required": ["orderId", "productId", "qty", "price"]
     },
-    "Purchase": {
-      "title": "Purchase",
-      "description": "Stock replenishment header",
+    "WriteOff": {
+      "title": "Списання",
+      "description": "Списання товарів",
       "type": "object",
       "properties": {
-        "date": { "type": "string", "format": "date-time", "description": "Purchase date" },
-        "supplier": { "type": "string", "description": "Supplier name" },
-        "status": { "type": "string", "enum": ["Оплачено", "Борг", "Чернетка"], "description": "Payment status" },
-        "deliveryCost": { "type": "number", "description": "Cost of delivery to us" }
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Чернетка", "Проведено", "Скасовано"] },
+        "comment": { "type": "string" },
+        "isDeleted": { "type": "boolean" }
       },
-      "required": ["date", "supplier"]
-    },
-    "PurchaseItem": {
-      "title": "PurchaseItem",
-      "description": "Individual items within a purchase",
-      "type": "object",
-      "properties": {
-        "purchaseId": { "type": "string", "description": "Reference to Purchase" },
-        "productId": { "type": "string", "description": "Reference to Product" },
-        "qty": { "type": "number", "description": "Quantity purchased" },
-        "price": { "type": "number", "description": "Unit cost" }
-      },
-      "required": ["purchaseId", "productId", "qty", "price"]
-    },
-    "TechnicalSpec": {
-      "title": "TechnicalSpec",
-      "description": "Helium consumption norms",
-      "type": "object",
-      "properties": {
-        "size": { "type": "string", "description": "Size label (e.g. 12\")" },
-        "heliumVolume": { "type": "number", "description": "Helium volume in liters" }
-      },
-      "required": ["size", "heliumVolume"]
-    },
-    "Expense": {
-      "title": "Expense",
-      "description": "General operational expenses",
-      "type": "object",
-      "properties": {
-        "date": { "type": "string", "description": "Expense date (YYYY-MM-DD)" },
-        "category": { "type": "string", "description": "Expense category" },
-        "amount": { "type": "number", "description": "Cost amount" },
-        "comment": { "type": "string", "description": "Details about the expense" },
-        "relatedId": { "type": "string", "description": "Optional link to order or purchase" }
-      },
-      "required": ["date", "category", "amount"]
+      "required": ["date", "status"]
     }
   },
   "firestore": {
-    "/products": { "schema": "Product", "description": "Inventory collection" },
-    "/clients": { "schema": "Client", "description": "Customers collection" },
-    "/orders": { "schema": "Order", "description": "Orders collection" },
-    "/orderItems": { "schema": "OrderItem", "description": "Order items collection" },
-    "/purchases": { "schema": "Purchase", "description": "Inventory restock collection" },
-    "/purchaseItems": { "schema": "PurchaseItem", "description": "Restock items collection" },
-    "/technicalSpecs": { "schema": "TechnicalSpec", "description": "Technical data collection" },
-    "/helium": { "schema": "HeliumTank", "description": "Helium tank monitoring" },
-    "/expenses": { "schema": "Expense", "description": "Operational expenses collection" },
-    "/test": { "schema": "object", "description": "Connection test collection" }
+    "products": { "schema": "Product", "description": "Колекція товарів" },
+    "clients": { "schema": "Client", "description": "Колекція клієнтів" },
+    "orders": { "schema": "Order", "description": "Колекція замовлень" },
+    "orderItems": { "schema": "OrderItem", "description": "Колекція позицій замовлень" },
+    "purchases": { "schema": "Purchase", "description": "Колекція закупівель" },
+    "purchaseItems": { "schema": "PurchaseItem", "description": "Колекція позицій закупівель" },
+    "writeOffs": { "schema": "WriteOff", "description": "Колекція списань" },
+    "writeOffItems": { "schema": "WriteOffItem", "description": "Колекція позицій списань" },
+    "suppliers": { "schema": "Supplier", "description": "Довідник постачальників" },
+    "expenses": { "schema": "Expense", "description": "Опервитрати" },
+    "technicalSpecs": { "schema": "TechnicalSpec", "description": "Теххарактеристики" },
+    "helium": { "schema": "HeliumTank", "description": "Залишки гелію" },
+    "users": { "schema": "AppUser", "description": "Користувачі системи" },
+    "logs": { "schema": "Log", "description": "Логи дій" }
   }
 }

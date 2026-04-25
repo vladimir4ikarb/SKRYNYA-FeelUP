@@ -26,13 +26,13 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => (
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className="relative bg-card w-full max-w-3xl rounded-t-[32px] lg:rounded-[40px] shadow-2xl overflow-hidden flex flex-col max-h-[95vh] lg:max-h-[90vh] border border-border mt-auto lg:mt-0"
         >
-          <div className="p-6 lg:p-10 border-b border-border flex items-center justify-between shrink-0 bg-background/50">
-            <h3 className="text-xl lg:text-2xl font-black text-text-main tracking-tight">{title}</h3>
-            <button onClick={onClose} className="p-2 lg:p-3 hover:bg-card0/10 rounded-2xl transition-all text-text-muted">
-              <X className="w-5 h-5 lg:w-6 lg:h-6" />
+          <div className="px-4 py-3 lg:px-8 lg:py-6 border-b border-border flex items-center justify-between shrink-0 bg-background/50">
+            <h3 className="text-base lg:text-xl font-black text-text-main tracking-tight">{title}</h3>
+            <button onClick={onClose} className="p-1.5 lg:p-2.5 hover:bg-card/10 rounded-xl transition-all text-text-muted">
+              <X className="w-5 h-5 lg:w-5.5 lg:h-5.5" />
             </button>
           </div>
-          <div className="p-6 lg:p-10 overflow-y-auto custom-scrollbar flex-1 bg-card pb-32 lg:pb-10">
+          <div className="p-4 lg:p-8 overflow-y-auto custom-scrollbar flex-1 bg-card">
             {children}
           </div>
         </motion.div>

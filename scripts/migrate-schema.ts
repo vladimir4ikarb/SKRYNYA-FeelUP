@@ -38,7 +38,7 @@ function toOrderPatch(data: any): Patch {
   if (!('deliveryDate' in data)) patch.deliveryDate = data.delivery || '';
   if (!('managerId' in data)) patch.managerId = data.manager || '';
   if (!('totalAmount' in data)) patch.totalAmount = 0;
-  if (!('status' in data) || !['Чернетка', 'В обробці', 'Виконано', 'Скасовано'].includes(data.status)) {
+  if (!('status' in data) || !['Чернетка', 'Виконано', 'Скасовано'].includes(data.status)) {
     patch.status = 'Чернетка';
   }
   if (!('isDeleted' in data)) patch.isDeleted = false;

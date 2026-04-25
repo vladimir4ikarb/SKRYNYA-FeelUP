@@ -11,7 +11,8 @@ import {
   LogOut,
   Moon,
   Sun,
-  X
+  X,
+  FileMinus
 } from 'lucide-react';
 import { FirebaseUser, AppUser } from '../../types';
 
@@ -45,22 +46,22 @@ export const Sidebar = ({
 
   const sidebarContent = (
     <div className="w-64 lg:w-64 bg-sidebar/95 backdrop-blur-xl h-screen flex flex-col p-3 lg:p-4 shrink-0 shadow-2xl lg:shadow-none border-r border-white/10 lg:border-none overflow-y-auto">
-      <div className="flex items-center justify-between mb-4 lg:mb-8 px-2 lg:block">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 flex-shrink-0">
+      <div className="flex flex-col items-center mb-6 lg:mb-10 px-2 relative">
+        <div className="flex flex-col items-center gap-3 lg:gap-4 w-full">
+          <div className="w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0">
             <img src="/feelup-icon.svg" className="w-full h-full object-contain" alt="FEEL UP" />
           </div>
-          <div className="flex flex-col justify-center">
+          <div className="flex flex-col items-center text-center">
             <h1 className="text-lg lg:text-2xl font-head font-semibold tracking-tight leading-none text-white">
               FEEL UP
             </h1>
-            <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-0.5 lg:mt-1 leading-none whitespace-nowrap text-text-muted">
+            <p className="text-[7px] lg:text-[9px] font-medium tracking-[0.1em] uppercase mt-1 lg:mt-2 leading-none whitespace-nowrap text-text-muted">
               СТУДІЯ АЕРОДИЗАЙНУ
             </p>
           </div>
         </div>
         {onClose && (
-          <button onClick={onClose} className="lg:hidden p-2 text-slate-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="lg:hidden absolute -top-1 -right-1 p-2 text-slate-400 hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         )}
@@ -74,6 +75,7 @@ export const Sidebar = ({
           { id: 'clients', icon: Users, label: 'Клієнти' },
           { id: 'expenses', icon: TrendingUp, label: 'Витрати' },
           { id: 'purchases', icon: ClipboardCheck, label: 'Закупівлі' },
+          { id: 'write-offs', icon: FileMinus, label: 'Списання' },
           { id: 'specs', icon: Settings, label: 'Норми' },
           currentUserData?.role === 'admin' && { id: 'admin', icon: Users, label: 'Адмін' },
         ].filter(Boolean).map((item: any) => (

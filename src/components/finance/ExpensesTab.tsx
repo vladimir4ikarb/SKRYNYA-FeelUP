@@ -10,13 +10,16 @@ interface ExpensesTabProps {
 }
 
 export const ExpensesTab = ({ expenses, searchTerm, onEdit, onDelete }: ExpensesTabProps) => {
-  const filtered = expenses.filter(e => 
-    e.category.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    e.comment.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filtered = expenses.filter(e => {
+    const category = (e.category || '').toLowerCase();
+    const comment = (e.comment || '').toLowerCase();
+    const search = searchTerm.toLowerCase();
+    return category.includes(search) || comment.includes(search);
+  });
 
   const statsByCategory = filtered.reduce((acc, e) => {
-    acc[e.category] = (acc[e.category] || 0) + e.amount;
+    const cat = e.category || 'Інше';
+    acc[cat] = (acc[cat] || 0) + (e.amount || 0);
     return acc;
   }, {} as Record<string, number>);
 
@@ -25,14 +28,14 @@ export const ExpensesTab = ({ expenses, searchTerm, onEdit, onDelete }: Expenses
       {/* Category Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {Object.entries(statsByCategory).map(([cat, amount]) => (
-          <div key={cat} className="saas-card p-4 flex flex-col gap-1">
+          <div key={cat} className="card-base p-4 flex flex-col gap-1">
             <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{cat}</span>
             <span className="text-lg font-black text-rose-500">{amount.toLocaleString()} ₴</span>
           </div>
         ))}
       </div>
 
-      <div className="saas-card overflow-hidden">
+      <div className="card-base card-orders overflow-hidden">
         {/* Desktop View */}
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">

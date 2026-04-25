@@ -71,14 +71,20 @@ service cloud.firestore {
     // ===============================================================
 
     function isValidProduct(data) {
-      return hasRequiredFields(['name']) &&
+      return hasRequiredFields(['name', 'category']) &&
              data.name is string && data.name.size() > 0 && data.name.size() < 500 &&
-             (!('category' in data) || (data.category is string && data.category.size() < 200)) &&
+             data.category is string && data.category.size() < 200 &&
+             (!('subCategory' in data) || (data.subCategory is string && data.subCategory.size() < 200)) &&
+             (!('sku' in data) || (data.sku is string && data.sku.size() < 50)) &&
+             (!('skuId' in data) || (data.skuId is number)) &&
+             (!('foilType' in data) || (data.foilType is string)) &&
+             (!('foilLabel' in data) || (data.foilLabel is string)) &&
+             (!('producer' in data) || (data.producer is string)) &&
              (!('size' in data) || (data.size is string && data.size.size() < 100)) &&
              (!('color' in data) || (data.color is string && data.color.size() < 100)) &&
-             (!('heliumVolume' in data) || (data.heliumVolume is number && data.heliumVolume >= 0)) &&
-             (!('costPrice' in data) || (data.costPrice is number && data.costPrice >= 0)) &&
-             (!('currentStock' in data) || (data.currentStock is number)) &&
+             (!('latexSeries' in data) || (data.latexSeries is string && data.latexSeries.size() < 100)) &&
+             (!('description' in data) || (data.description is string && data.description.size() < 1000)) &&
+             (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() < 2000)) &&
              (!('isArchived' in data) || data.isArchived is bool) &&
              (!('isDeleted' in data) || data.isDeleted is bool);
     }
@@ -103,12 +109,15 @@ service cloud.firestore {
 
     function isValidOrder(data) {
       return hasRequiredFields(['clientId', 'date', 'status']) &&
-             data.status in ['В обробці', 'Виконано', 'Скасовано'] &&
+             data.status in ['Чернетка', 'Виконано', 'Скасовано'] &&
              data.clientId is string &&
              data.date is string &&
              (!('delivery' in data) || (data.delivery is string && data.delivery.size() < 1000)) &&
+             (!('deliveryDate' in data) || (data.deliveryDate is string)) &&
              (!('manager' in data) || (data.manager is string && data.manager.size() < 200)) &&
+             (!('managerId' in data) || (data.managerId is string)) &&
              (!('comment' in data) || (data.comment is string && data.comment.size() < 5000)) &&
+             (!('totalAmount' in data) || (data.totalAmount is number)) &&
              (!('extraCosts' in data) || (data.extraCosts is number)) &&
              (!('isDeleted' in data) || data.isDeleted is bool);
     }
@@ -119,16 +128,19 @@ service cloud.firestore {
              data.price is number && data.price > 0 &&
              data.orderId is string &&
              data.productId is string &&
-             (!('defect' in data) || (data.defect is number && data.defect >= 0 && data.defect <= data.qty)) &&
+             (!('total' in data) || (data.total is number)) &&
              (!('isDeleted' in data) || data.isDeleted is bool);
     }
 
     function isValidPurchase(data) {
       return hasRequiredFields(['date', 'supplier', 'status']) &&
              data.supplier is string && data.supplier.size() > 0 && data.supplier.size() < 500 &&
-             data.status in ['Оплачено', 'Чернетка'] &&
+             data.status in ['Проведено', 'Чернетка', 'Скасовано', 'Оплачено'] &&
              data.date is string &&
+             (!('supplierName' in data) || (data.supplierName is string)) &&
+             (!('totalAmount' in data) || (data.totalAmount is number)) &&
              (!('deliveryCost' in data) || (data.deliveryCost is number)) &&
+             (!('isArchived' in data) || data.isArchived is bool) &&
              (!('isDeleted' in data) || data.isDeleted is bool);
     }
 
@@ -138,6 +150,25 @@ service cloud.firestore {
              data.price is number && data.price > 0 &&
              data.purchaseId is string &&
              data.productId is string &&
+             (!('costPrice' in data) || data.costPrice is number) &&
+             (!('total' in data) || data.total is number) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidWriteOff(data) {
+      return hasRequiredFields(['date', 'status']) &&
+             data.status in ['Проведено', 'Чернетка', 'Скасовано'] &&
+             data.date is string &&
+             (!('comment' in data) || (data.comment is string && data.comment.size() < 5000)) &&
+             (!('isDeleted' in data) || data.isDeleted is bool);
+    }
+
+    function isValidWriteOffItem(data) {
+      return hasRequiredFields(['writeOffId', 'productId', 'qty']) &&
+             data.qty is number && data.qty > 0 &&
+             data.writeOffId is string &&
+             data.productId is string &&
+             (!('itemTotal' in data) || data.itemTotal is number) &&
              (!('isDeleted' in data) || data.isDeleted is bool);
     }
 
@@ -168,6 +199,13 @@ service cloud.firestore {
              data.heliumVolume is number && data.heliumVolume >= 0;
     }
 
+    function isValidSupplier(data) {
+      return hasRequiredFields(['name']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 500 &&
+             (!('isDeleted' in data) || data.isDeleted is bool) &&
+             (!('createdAt' in data) || data.createdAt is timestamp);
+    }
+
     // ===============================================================
     // Match Rules
     // ===============================================================
@@ -184,8 +222,10 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
       allow read: if isManager();
-      allow write: if isAdmin();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update, delete: if isAdmin();
     }
 
     match /products/{productId} {
@@ -218,9 +258,28 @@ service cloud.firestore {
       allow write: if isManager() && isValidPurchaseItem(request.resource.data);
     }
 
+    match /writeOffs/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidWriteOff(request.resource.data);
+    }
+
+    match /writeOffItems/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidWriteOffItem(request.resource.data);
+    }
+
     match /technicalSpecs/{allPaths=**} {
       allow read: if isManager();
       allow write: if isManager() && isValidTechnicalSpec(request.resource.data);
+    }
+
+    match /suppliers/{allPaths=**} {
+      allow read: if isManager();
+      allow write: if isManager() && isValidSupplier(request.resource.data);
+    }
+    
+    match /sequences/{allPaths=**} {
+      allow read, write: if isManager();
     }
 
     match /expenses/{expenseId} {

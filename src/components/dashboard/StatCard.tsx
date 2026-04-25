@@ -9,10 +9,11 @@ interface StatCardProps {
   trend: string;
   up: boolean;
   isLarge?: boolean;
+  variant?: 'profit' | 'income' | 'expense' | 'average';
 }
 
-export const StatCard = React.memo(({ label, value, icon: Icon, color, trend, up, isLarge }: StatCardProps) => (
- <div className={`stat-card stat-card-profit group ${isLarge ? 'p-5 lg:p-6' : 'p-3 lg:p-4'}`}>
+export const StatCard = React.memo(({ label, value, icon: Icon, color, trend, up, isLarge, variant = 'profit' }: StatCardProps) => (
+ <div className={`card-base card-kpi-${variant} group ${isLarge ? 'p-5 lg:p-6' : 'p-3 lg:p-4'}`}>
     <div className="flex items-center justify-between mb-2">
       <div className={`${color} ${isLarge ? 'w-10 h-10 lg:w-12 lg:h-12' : 'w-8 h-8 lg:w-10 lg:h-10'} rounded-xl flex items-center justify-center text-white shadow-lg shadow-current/20`}>
         <Icon className={isLarge ? "w-5 h-5 lg:w-6 lg:h-6" : "w-4 h-4 lg:w-5 lg:h-5"} />
