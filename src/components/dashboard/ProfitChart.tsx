@@ -13,14 +13,23 @@ interface ProfitChartProps {
   data: any[];
 }
 
-export const ProfitChart = React.memo(({ data }: ProfitChartProps) => (
-  <div className="card-base card-chart p-6 h-[380px] flex flex-col">
+export const ProfitChart = React.memo(({ data }: ProfitChartProps) => {
+  React.useEffect(() => {
+    // Trigger a window resize event to force Recharts to recalculate dimensions
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="card-base card-chart p-6 h-full flex flex-col min-h-[350px]">
     <div className="mb-6">
       <h3 className="text-lg font-semibold text-text-main">Приріст прибутку</h3>
       <p className="text-text-muted text-xs">За останній тиждень</p>
     </div>
-    <div className="flex-1 w-full">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="h-[300px] lg:h-[350px] w-full relative">
+      <ResponsiveContainer width="100%" height="100%" debounce={1} minWidth={0}>
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
@@ -40,4 +49,5 @@ export const ProfitChart = React.memo(({ data }: ProfitChartProps) => (
       </ResponsiveContainer>
     </div>
   </div>
-));
+);
+});

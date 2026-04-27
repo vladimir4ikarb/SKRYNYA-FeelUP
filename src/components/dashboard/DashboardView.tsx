@@ -47,19 +47,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             
             <div className="grid grid-cols-2 gap-2">
               <StatCard label="Чистий прибуток" value={`${dashboardStats.netProfit} ₴`} icon={Wallet} color="bg-indigo-600" trend="Прибуток" up={dashboardStats.netProfit >= 0} />
-              <StatCard label="Валовий прибут." value={`${dashboardStats.grossProfit} ₴`} icon={TrendingUp} color="bg-violet-500" trend="Маржа" up={true} />
               <StatCard label="Дохід" value={`${dashboardStats.totalIncome} ₴`} icon={ArrowUpRight} color="bg-emerald-500" trend="Виручка" up={true} />
               <StatCard label="Витрати" value={`${dashboardStats.totalExpenses} ₴`} icon={ArrowDownRight} color="bg-rose-500" trend="Усього" up={false} />
+              <StatCard label="Сер. чек" value={`${dashboardStats.avgCheck} ₴`} icon={TrendingUp} color="bg-amber-500" trend="Замовлення" up={true} />
             </div>
           </div>
 
           {/* Desktop Stats */}
-          <div className="hidden lg:grid grid-cols-5 gap-4">
+          <div className="hidden lg:grid grid-cols-4 gap-4">
             <StatCard label="Чистий прибуток" value={`${dashboardStats.netProfit} ₴`} icon={Wallet} color="bg-indigo-600" trend="Після витрат" up={dashboardStats.netProfit >= 0} isLarge />
-            <StatCard label="Валовий прибуток" value={`${dashboardStats.grossProfit} ₴`} icon={TrendingUp} color="bg-violet-500" trend="Маржа" up={true} isLarge />
             <StatCard label="Дохід" value={`${dashboardStats.totalIncome} ₴`} icon={ArrowUpRight} color="bg-emerald-500" trend="Виручка" up={true} isLarge />
             <StatCard label="Витрати" value={`${dashboardStats.totalExpenses} ₴`} icon={ArrowDownRight} color="bg-rose-500" trend="Усього" up={false} isLarge />
-            <StatCard label="Сер. чек" value={`${dashboardStats.avgCheck} ₴`} icon={ArrowUpRight} color="bg-amber-500" trend="Ефективність" up={true} isLarge />
+            <StatCard label="Сер. чек" value={`${dashboardStats.avgCheck} ₴`} icon={TrendingUp} color="bg-amber-500" trend="Ефективність" up={true} isLarge />
           </div>
 
           <div className="h-[380px] lg:h-[450px]">
