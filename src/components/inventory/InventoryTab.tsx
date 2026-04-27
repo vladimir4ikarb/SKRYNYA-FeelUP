@@ -12,6 +12,7 @@ interface InventoryTabProps {
   onToggleArchive: (p: Product) => void;
   onEdit: (p: Product) => void;
   onDelete: (id: string) => void;
+  dashboardStats?: any;
 }
 
 export const InventoryTab = React.memo(({ 
@@ -22,7 +23,8 @@ export const InventoryTab = React.memo(({
   searchTerm, 
   onToggleArchive, 
   onEdit, 
-  onDelete 
+  onDelete,
+  dashboardStats
 }: InventoryTabProps) => {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
   const [filters, setFilters] = React.useState<Record<string, string>>({});
@@ -148,6 +150,16 @@ export const InventoryTab = React.memo(({
       keys.push('size', 'color', 'producer');
     } else if (selectedCategory === "Bubbles") {
       keys.push('size', 'producer');
+    } else if (selectedCategory === "Стрічки") {
+      keys.push('subCategory', 'color');
+    } else if (selectedCategory === "Декор / Наповнювачі") {
+      keys.push('subCategory', 'color');
+    } else if (selectedCategory === "Розхідники") {
+      keys.push('name');
+    } else if (selectedCategory === "Обладнання") {
+      keys.push('name');
+    } else if (selectedCategory === "Гелій") {
+      keys.push('subCategory');
     }
 
     keys.forEach(key => {
@@ -187,7 +199,7 @@ export const InventoryTab = React.memo(({
       )}
 
       {/* Sub Filters */}
-      {selectedCategory && filterOptions && (
+      {selectedCategory && filterOptions && selectedCategory !== "Розхідники" && selectedCategory !== "Обладнання" && (
         <div className="flex flex-wrap gap-3 p-4 bg-card border border-border rounded-[24px]">
           <div className="flex items-center gap-2 mr-2">
             <Filter className="w-3.5 h-3.5 text-primary" />
@@ -200,7 +212,11 @@ export const InventoryTab = React.memo(({
               'color': 'Колір',
               'producer': 'Виробник',
               'foilType': 'Тип',
-              'foilLabel': 'Номер'
+              'foilLabel': 'Номер',
+              'name': 'Назва',
+              'subCategory': selectedCategory === "Стрічки" ? 'Тип стрічки' : 
+                             (selectedCategory === "Декор / Наповнювачі" ? 'Тип' : 
+                             (selectedCategory === "Гелій" ? 'Тип балона' : 'Підкатегорія'))
             };
             return (
               <div key={key} className="flex flex-col gap-1 min-w-[100px]">
@@ -233,8 +249,7 @@ export const InventoryTab = React.memo(({
           <thead className="bg-background border-b border-border">
             <tr>
               <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Назва</th>
-              <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Колір</th>
-              <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Розмір</th>
+              <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Характеристики</th>
               <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Виробник</th>
               <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Залишок</th>
               <th className="px-8 py-3 text-sm font-bold text-text-muted uppercase tracking-wider">Собівартість</th>
@@ -245,13 +260,29 @@ export const InventoryTab = React.memo(({
             {Object.entries(grouped).map(([category, prods]) => (
               <React.Fragment key={category}>
                 <tr className="bg-background/80">
-                  <td colSpan={7} className="px-8 py-3 font-bold text-text-main text-xs uppercase tracking-wider border-y border-border">
+                  <td colSpan={6} className="px-8 py-3 font-bold text-text-main text-xs uppercase tracking-wider border-y border-border">
                     {category}
                   </td>
                 </tr>
                 {prods.map(p => {
-                  const lastCost = lastCostMap[p.id];
+                  const lastCost = Number(lastCostMap[p.id] || p.costPrice || 0);
                   const color = category === "Bubbles" ? "Прозорий" : p.color;
+                  const isHelium = category === "Гелій";
+                  const isEquipment = category === "Обладнання";
+                  const isConsumable = category === "Розхідники";
+                  
+                  const stock = Number(isHelium && dashboardStats ? dashboardStats.heliumBalance : (inventory[p.id] || 0));
+                  
+                  let characteristics = '—';
+                  if (isHelium) {
+                    characteristics = `Балон ${p.subCategory || '40 л'}`;
+                  } else if (isEquipment || isConsumable) {
+                    characteristics = p.note || '—';
+                  } else {
+                    const parts = [color, p.size].filter(Boolean);
+                    characteristics = parts.length > 0 ? parts.join(', ') : '—';
+                  }
+
                   return (
                     <tr key={p.id} className={`hover:bg-background/50 transition-colors ${p.isArchived ? 'opacity-50' : ''}`}>
                       <td className="px-8 py-3 font-bold text-text-main">
@@ -272,23 +303,20 @@ export const InventoryTab = React.memo(({
                         </div>
                       </td>
                       <td className="px-8 py-3 text-text-muted font-medium text-sm">
-                        {color || '—'}
-                      </td>
-                      <td className="px-8 py-3 text-text-muted font-medium text-sm">
-                        {p.size || '—'}
+                        {characteristics}
                       </td>
                       <td className="px-8 py-3 text-text-muted font-medium text-sm">
                         {p.producer || '—'}
                       </td>
                       <td className="px-8 py-3">
-                        <span className={`px-3 py-1 rounded-lg text-sm font-bold ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card/10 text-text-muted'}`}>
-                          {inventory[p.id] || 0}
+                        <span className={`px-3 py-1 rounded-lg text-sm font-bold ${stock > 0 ? 'bg-emerald-500/10 text-emerald-500' : stock < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card/10 text-text-muted'}`}>
+                          {isHelium ? `${stock.toFixed(1)} м³` : stock}
                         </span>
                       </td>
                       <td className="px-8 py-3 whitespace-nowrap">
                         <div className="flex flex-col">
                           <span className="text-xs font-black text-text-main">
-                            {lastCost ? `${lastCost.toFixed(2)} ₴` : '—'}
+                            {lastCost > 0 ? `${lastCost.toFixed(2)} ₴` : '—'}
                           </span>
                         </div>
                       </td>
@@ -319,8 +347,23 @@ export const InventoryTab = React.memo(({
             </div>
             <div className="divide-y divide-border/50">
               {prods.map(p => {
-                const lastCost = lastCostMap[p.id];
+                const lastCost = Number(lastCostMap[p.id] || p.costPrice || 0);
                 const color = category === "Bubbles" ? "Прозорий" : p.color;
+                const isHelium = category === "Гелій";
+                const isEquipment = category === "Обладнання";
+                const isConsumable = category === "Розхідники";
+                const stock = Number(isHelium && dashboardStats ? dashboardStats.heliumBalance : (inventory[p.id] || 0));
+
+                let characteristics = '—';
+                if (isHelium) {
+                  characteristics = `Балон ${p.subCategory || '40 л'}`;
+                } else if (isEquipment || isConsumable) {
+                  characteristics = p.note || '—';
+                } else {
+                  const parts = [color, p.size].filter(Boolean);
+                  characteristics = parts.length > 0 ? parts.join(', ') : '—';
+                }
+                
                 return (
                   <div key={p.id} className={`p-3 flex items-center gap-3 active:bg-background/80 transition-colors ${p.isArchived ? 'opacity-50' : ''}`}>
                     <div className="w-10 h-10 rounded-lg bg-background border border-border overflow-hidden flex-shrink-0 flex items-center justify-center shadow-sm">
@@ -341,15 +384,18 @@ export const InventoryTab = React.memo(({
                         </div>
                         {lastCost > 0 && (
                           <div className="text-[10px] text-text-muted font-bold">
-                             • {lastCost} ₴
+                             • {lastCost.toFixed(2)} ₴
                           </div>
                         )}
+                      </div>
+                      <div className="mt-0.5 text-[10px] font-bold text-text-muted italic truncate">
+                         {characteristics}
                       </div>
                     </div>
 
                     <div className="flex flex-col items-end gap-1 shrink-0">
-                      <span className={`px-2 py-0.5 rounded-lg text-[11px] font-black ${inventory[p.id] > 0 ? 'bg-emerald-500/10 text-emerald-500' : inventory[p.id] < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card/10 text-text-muted'}`}>
-                        {inventory[p.id] || 0}
+                      <span className={`px-2 py-0.5 rounded-lg text-[11px] font-black ${stock > 0 ? 'bg-emerald-500/10 text-emerald-500' : stock < 0 ? 'bg-rose-500/10 text-rose-500' : 'bg-card/10 text-text-muted'}`}>
+                        {isHelium ? `${stock.toFixed(1)} м³` : stock}
                       </span>
                       <div className="flex items-center gap-1">
                         <button onClick={() => onEdit(p)} className="p-1.5 hover:bg-primary/10 rounded-md text-text-muted hover:text-primary transition-colors">

@@ -87,6 +87,10 @@ export function useAppDataActions(
       data.isActive = true;
     }
     
+    if (activeTab === 'products') {
+      delete data.baseName;
+    }
+    
     const col = activeTab === 'products' ? 'products' : 
                 activeTab === 'sales' ? 'orders' : 
                 activeTab === 'clients' ? 'clients' : 

@@ -23,6 +23,15 @@ export interface Product {
   isDeleted?: boolean;
   imageUrl?: string;
   latexSeries?: string;
+  ribbonSeries?: string;
+  ribbonWidth?: string;
+  ribbonLength?: string;
+  decorShape?: string;
+  decorWeight?: string;
+  decorVolume?: string;
+  equipmentModel?: string;
+  heliumTankNumber?: string;
+  note?: string;
   description?: string;
 }
 

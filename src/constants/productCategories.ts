@@ -6,8 +6,7 @@ export const PRODUCT_CATEGORIES = [
   "Декор / Наповнювачі",
   "Розхідники",
   "Обладнання",
-  "Гелій",
-  "Інше"
+  "Гелій"
 ] as const;
 
 export type ParentCategory = typeof PRODUCT_CATEGORIES[number];
@@ -71,15 +70,38 @@ export const INITIAL_PRODUCERS = [
   "Інше"
 ];
 
+export const RIBBON_TYPES = [
+  "Атласна",
+  "Поліпропіленова",
+  "Органза"
+] as const;
+
+export type RibbonType = typeof RIBBON_TYPES[number];
+
+export const RIBBON_SERIES = [
+  "Звичайна",
+  "Металік",
+  "Пастель"
+] as const;
+
+export const HELIUM_TYPES = [
+  "10 л",
+  "20 л",
+  "40 л",
+  "50 л",
+  "Інше"
+] as const;
+
+export type HeliumType = typeof HELIUM_TYPES[number];
+
 // Placeholder for future subcategories
 export const SUB_CATEGORIES: Record<ParentCategory, string[]> = {
   "Фольговані кулі": ["Цифри", "Фігури", "Серця/Зірки", "З написами", "Персонажі", "Інші"],
   "Латексні кулі": [...LATEX_TYPES],
   "Bubbles": [],
-  "Стрічки": [],
-  "Декор / Наповнювачі": ["Конфеті", "Пір'я", "Гірлянди", "Наклейки"],
-  "Розхідники": ["Грузики", "Палички", "Пакети", "Клей"],
-  "Обладнання": ["Компресори", "Балони", "Редуктори", "Затискачі"],
-  "Гелій": ["Балон 40л", "Балон 10л"],
-  "Інше": []
+  "Стрічки": [...RIBBON_TYPES],
+  "Декор / Наповнювачі": ["Конфеті", "Пірʼя", "Пінопластові кульки", "Інше"],
+  "Розхідники": [],
+  "Обладнання": [],
+  "Гелій": [...HELIUM_TYPES]
 };

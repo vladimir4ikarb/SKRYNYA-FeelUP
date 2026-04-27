@@ -485,6 +485,7 @@ export default function App() {
                   purchases={purchases}
                   purchaseItems={purchaseItems}
                   searchTerm={searchTerm} 
+                  dashboardStats={dashboardStats}
                   onToggleArchive={(p) => onToggleArchive(p, 'products')} 
                   onEdit={(p) => { setEditingItem(p); setIsModalOpen(true); }} 
                   onDelete={onDeleteItem} 
